@@ -1,34 +1,159 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
 @import "tailwindcss";
 
-body{
-  @apply bg-[#000] text-white ;
+body {
+	@apply bg-[#000] text-white;
 }
 
+/* Card styles */
+.card {
+	@apply bg-[#1E1E1E] rounded-lg shadow-lg;
+}
 
+/* Button styles */
+.btn {
+	@apply px-4 py-2 rounded-md transition-colors duration-200;
+}
 
-.font-sans{
-  font-family: "DM Sans", sans-serif;
+.btn-primary {
+	@apply bg-blue-600 hover:bg-blue-700 text-white;
+}
+
+.btn-ghost {
+	@apply bg-transparent hover:bg-gray-800 text-gray-300;
+}
+
+/* Tab styles */
+.tab-list {
+	@apply flex border-b border-gray-800;
+}
+
+.tab {
+	@apply px-4 py-2 font-mono text-sm transition-colors duration-200;
+}
+
+.tab:hover {
+	@apply text-white;
+}
+
+.tab.active {
+	@apply bg-[#1E1E1E] text-white border-b-2 border-blue-500;
+}
+
+.tab-panels {
+	@apply mt-4;
+}
+
+.tab-panel {
+	@apply hidden;
+}
+
+.tab-panel.active {
+	@apply block;
+}
+
+/* Code block styles */
+.code-block {
+	@apply bg-[#1E1E1E] p-4 rounded-lg overflow-x-auto;
+	@apply font-mono text-sm;
+}
+
+/* Animation */
+.animate-fade-in {
+	animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Prism.js customization */
+pre[class*="language-"] {
+	@apply bg-[#1E1E1E] rounded-lg p-4 overflow-x-auto;
+	margin: 0;
+	border-radius: 0.5rem;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+code[class*="language-"] {
+	@apply font-mono text-sm;
+	text-shadow: none;
+	color: #e6e6e6;
+}
+
+/* HTML specific syntax highlighting */
+.language-html .token.tag {
+	color: #ff79c6;
+}
+
+.language-html .token.attr-name {
+	color: #50fa7b;
+}
+
+.language-html .token.attr-value {
+	color: #f1fa8c;
+}
+
+.language-html .token.string {
+	color: #f1fa8c;
+}
+
+.language-html .token.punctuation {
+	color: #f8f8f2;
+}
+
+/* Line numbers */
+.line-numbers .line-numbers-rows {
+	@apply border-r border-gray-700;
+}
+
+.line-numbers-rows > span:before {
+	color: #6272a4;
+}
+
+.font-sans {
+	font-family: "DM Sans", sans-serif;
 }
 .font-mono {
-  font-family: "Geist Mono", monospace;
+	font-family: "Geist Mono", monospace;
 }
 
 @keyframes rotateBorder {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
 
 /* Animation class */
 .animate-border {
-  animation: rotateBorder 3s linear infinite;
-  background-size: 300% 300%;
+	animation: rotateBorder 3s linear infinite;
+	background-size: 300% 300%;
+}
+
+h2 {
+	@apply font-sans font-[600] text-[52px] leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text;
+}
+
+p {
+	@apply font-mono font-[400] leading-[27px] text-[22px];
+}
+
+
+.program-details-btn{
+ @apply  px-4 py-2 font-mono rounded-t text-lg
 }
