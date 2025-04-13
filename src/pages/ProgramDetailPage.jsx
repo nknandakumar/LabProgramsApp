@@ -49,9 +49,9 @@ const ProgramDetailPage = () => {
 		switch (activeTab) {
 			case "code":
 				return (
-					<div className="w-full bg-[#1E1E1E] rounded-b-md rounded-r-md  p-4 overflow-x-auto">
-						<pre className="line-numbers language-html">
-							<code className="language-html">{formatCode(code)}</code>
+					<div className="w-full bg-[#1E1E1E] rounded-b-md rounded-r-md   p-4 overflow-x-auto">
+						<pre className="line-numbers language-html ">
+							<code className="language-html  ">{formatCode(code)}</code>
 						</pre>
 					</div>
 				);
@@ -81,7 +81,7 @@ const ProgramDetailPage = () => {
 	};
 
 	return (
-		<div className="mx-[112px] flex flex-col items-start justify-start pt-20 space-y-6">
+		<div className="mx-[112px] flex flex-col items-start justify-start pt-10 space-y-6 mb-10 ">
            <Link to={`/programs/${subject}`} ><button className=" cursor-pointer font-mono bg-amber-50 text-black px-4 py-2 rounded-md ">Back</button></Link>
 			<div className="space-y-2">
 				<p className="font-mono text-gray-400">Program {id}</p>

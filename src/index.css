@@ -130,6 +130,7 @@ code[class*="language-"] {
 @keyframes rotateBorder {
 	0% {
 		background-position: 0% 50%;
+		
 	}
 	50% {
 		background-position: 100% 50%;
@@ -139,11 +140,16 @@ code[class*="language-"] {
 	}
 }
 
+
+
 /* Animation class */
 .animate-border {
 	animation: rotateBorder 3s linear infinite;
 	background-size: 300% 300%;
+
 }
+
+
 
 h2 {
 	@apply font-sans font-[600] text-[52px] leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text;
@@ -153,7 +159,6 @@ p {
 	@apply font-mono font-[400] leading-[27px] text-[22px];
 }
 
-
-.program-details-btn{
- @apply  px-4 py-2 font-mono rounded-t text-lg
+.program-details-btn {
+	@apply px-4 py-2 font-mono rounded-t text-lg;
 }

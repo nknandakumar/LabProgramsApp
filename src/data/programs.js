@@ -3,7 +3,7 @@ export const cmaPrograms = [
 		id: 1,
 		program_name: "HTML Document Examples",
 		focused_on: "HTML Basics",
-		code: '<html>\n<head>\n<title>e-mail</title></head>\n<body background="black">\n<h1><font color="yellow">a.Image as background</font></h1>\n<h1><font color="yellow">b.Hyperlink using an image</font></h1>\n<a href="http://www.google.com"><font color="white" size="5">click on the image</font><br>\n<img src="5.jpg"></a>\n<h1><font color="yellow">c.Hyperlink with another webpage</font></h1>\n<a href="first.html"><font color="white" size="5">click here</font></a>\n<h1><font color="yellow">d.Link to e-mail address</font></h1>\n<a href="http://mail.google.com"><font color="white" size="5">link to send mail</font></a>\n</body>\n</html>',
+		code: '<html>\n<head>\n<title>e-mail</title></head>\n<body background="https://img.freepik.com/free-vector/dark-hexagonal-background-with-gradient-color_79603-1409.jpg?semt=ais_hybrid&w=740">\n<h1><font color="yellow">a.Image as background</font></h1>\n<h1><font color="yellow">b.Hyperlink using an image</font></h1>\n<a href="http://www.google.com"><font color="white" size="5">click on the image</font><br>\n<img src="https://www.shutterstock.com/image-vector/click-me-button-element-websites-600nw-682557868.jpg"></a>\n<h1><font color="yellow">c.Hyperlink with another webpage</font></h1>\n<a href="first.html"><font color="white" size="5">click here</font></a>\n<h1><font color="yellow">d.Link to e-mail address</font></h1>\n<a href="http://mail.google.com"><font color="white" size="5">link to send mail</font></a>\n</body>\n</html>',
 		external_css: "",
 		external_js: "",
 	},
