@@ -9,8 +9,7 @@ const Home = () => {
 	const features = [
 		{
 			name: "Ready-to-use Code Snippets",
-			description:
-				"Access clean, fully-functional code examples that you can use directly in your lab assignments.",
+			description: "Access clean, fully-functional code examples.",
 		},
 		{
 			name: "Instant Live Output Previews",
@@ -23,36 +22,47 @@ const Home = () => {
 		{ name: `Python`, path: `/programs/python` },
 	];
 	return (
-		<div className="w-full overflow-x-hidden">
+		<div className="w-full  overflow-hidden">
 			{/** Hero Section */}
-			<div className="text-center overflow-hidden px-4 sm:px-6 md:px-8">
-				<div className="min-h-screen hero bg-[url('/hero-Img.webp')] p-4 sm:p-10 md:p-20 m-4 sm:m-10 rounded-2xl bg-cover space-y-4 flex flex-col justify-start items-center">
-					<h1 className="font-sans leading-[80px] sm:leading-[100px] md:leading-[127px] text-[80px] sm:text-[120px] md:text-[154px] text-center font-[700]">
+
+			<div className="text-center mt-10 h-[100vh] overflow-hidden">
+				{/* Hero Section with Gradient Background */}
+				<div className="h-[70vh] md:h-[100vh] flex flex-col justify-start items-center p-5 md:p-20 bg-[url('/sm-HeroImg.avif')]  md:bg-[url('/HeroImg.avif')] rounded-2xl mx-3 md:mx-10 bg-cover">
+					<h1 className="font-sans leading-[50px] md:leading-[120px] mt-10 md:mt-0 text-6xl sm:text-7xl md:text-9xl text-center font-bold text-white mb-8">
 						Lab Set Programs
 					</h1>
-					<p className="font-mono text-[16px] sm:text-[18px] md:text-[22px] leading-[20px] sm:leading-[24px] md:leading-[27px] font-[400] text-center max-w-2xl mx-auto">
+
+					<p className="font-mono text-lg sm:text-xl md:text-2xl text-white mb-12 max-w-2xl">
 						Access All Your Lab Programs in One Place. Say goodbye to messy PDFs
 						and scattered files.
 					</p>
-					<Link to={`/subjects`} className="mt-4">
-						<span className="border px-1 py-3 sm:py-5 rounded-lg">
-							<button className="font-sans bg-black text-white uppercase px-4 py-2 font-[600] tracking-wide leading-[30px] sm:leading-[50px] text-[14px] sm:text-[16px] cursor-pointer rounded-lg">
+
+					<Link to={`/subjects`}>
+					<span className="border border-gray-300 hover:border-white hover:border-2  py-4 px-0.5 rounded-md ">
+							<button className=" animate-border bg-gradient-to-r from-[#000]  via-[#36454F] to-[#0A0A0A] font-mono cursor-pointer text-white px-6 py-3  rounded-md">
 								Click here for Lab Programs
 							</button>
 						</span>
 					</Link>
 				</div>
+
+				{/* Code Editor Preview Section */}
+				<div className="w-full max-w-4xl mx-auto -mt-[180px] sm:-mt-[100px] md:-mt-[350px] px-4">
+					<img
+						src="/CodeImg.avif"
+						alt="Hero section Image"
+						className="rounded-2xl bg-cover bg-center"
+					/>
+				</div>
 			</div>
 
-			<div className="text-start lg:text-center mt-10 sm:mt-16 md:mt-20 overflow-hidden px-4 sm:px-6 md:px-8 mx-auto max-w-7xl">
+			<div className="text-center -mt-40 sm:mt-16 md:mt-20 overflow-hidden px-4 sm:px-6 md:px-8 mx-auto max-w-7xl">
 				{/** Features Section */}
 				<div className="mb-10 sm:mb-16">
-					<h2 className="font-sans font-[600] text-[36px] sm:text-[42px] md:text-[52px] leading-[42px] sm:leading-[50px] md:leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text">
-						Features
+					<h2 className="font-sans font-[800] text-[36px] sm:text-[42px] md:text-[52px] leading-[42px] sm:leading-[50px] md:leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text">
+						What You Get
 					</h2>
-					<p className="font-mono font-[400] leading-[20px] sm:leading-[24px] md:leading-[27px] text-[16px] sm:text-[18px] md:text-[22px] mt-2">
-						productive, Cursor is the best way to code with AI.
-					</p>
+					
 
 					{/* Bento Grid Layout */}
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-10 sm:my-16 md:my-20">
@@ -73,16 +83,16 @@ const Home = () => {
 				</div>
 
 				{/** Subjects Section */}
-				<div className="flex flex-col items-center">
+				<div className="flex flex-col pt-20 items-center">
 					<h2 className="font-sans text-[36px] sm:text-[42px] md:text-[52px] leading-[42px] sm:leading-[50px] md:leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text mb-6 sm:mb-8 md:mb-10">
 						Subjects Covered
 					</h2>
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 my-6 sm:my-8 md:my-10 w-full">
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-16 sm:gap-20 my-6 sm:my-8 md:my-10 w-full">
 						{subjects.map((subject, index) => (
-							<div key={index} className="h-full">
+							<div key={index} className="h-full pb-6  ">
 								<div className="relative group rounded-xl p-[0.9px] transition-all duration-500 ease-in-out overflow-hidden h-full">
 									{/* Gradient layer */}
-									<div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 animate-border bg-gradient-to-r from-[#616C08] via-[#8A3251] to-blue-500 z-0"></div>
+									<div className="absolute inset-0 rounded-xl opacity-100 sm:opacity-0 sm:group-hover:opacity-100 animate-border bg-gradient-to-r bg-[url('/HeroImg.avif')] z-0"></div>
 
 									{/* Card content */}
 									<div className="relative z-10 bg-[#0C0C0C] rounded-xl p-6 sm:p-8 md:p-10 w-full text-start h-full flex flex-col justify-between">
@@ -104,7 +114,7 @@ const Home = () => {
 				</div>
 
 				{/**  */}
-				<div className="hero bg-[url('/hero-Img.webp')] py-8 rounded-lg bg-cover text-center flex flex-col items-center my-10 space-y-4">
+				<div className="hero bg-[url('/HeroImg.avif')] py-8 rounded-lg bg-cover text-center flex flex-col items-center my-10 space-y-6">
 					<span className="font-sans font-[600] text-[52px] leading-[58px] text-white">
 						{" "}
 						Learn Better. Code Smarter.
@@ -114,8 +124,8 @@ const Home = () => {
 						LabSet makes learning programming simple and efficient.
 					</p>
 					<Link to={`/subjects`}>
-						<span className="border px-1 py-5 rounded-lg">
-							<button className="font-sans bg-black text-white uppercase px-4 py-0.5 font-[600] tracking-wide leading-[50px] text-[16px] cursor-pointer rounded-lg">
+					<span className="border border-gray-300 hover:border-white hover:border-2  py-4 px-0.5 rounded-md ">
+							<button className=" animate-border bg-gradient-to-r from-[#000]  via-[#36454F] to-[#0A0A0A] font-mono cursor-pointer text-white px-6 py-3  rounded-md">
 								Click here for Lab Programs
 							</button>
 						</span>

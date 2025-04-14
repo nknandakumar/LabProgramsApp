@@ -13,7 +13,7 @@ body {
 
 /* Button styles */
 .btn {
-	@apply px-4 py-2 rounded-md transition-colors duration-200;
+	@apply px-3 py-1.5 sm:px-4 sm:py-2 rounded-md transition-colors duration-200 text-sm sm:text-base;
 }
 
 .btn-primary {
@@ -30,7 +30,7 @@ body {
 }
 
 .tab {
-	@apply px-4 py-2 font-mono text-sm transition-colors duration-200;
+	@apply px-3 py-1.5 sm:px-4 sm:py-2 font-mono text-xs sm:text-sm transition-colors duration-200;
 }
 
 .tab:hover {
@@ -42,7 +42,7 @@ body {
 }
 
 .tab-panels {
-	@apply mt-4;
+	@apply mt-2 sm:mt-4;
 }
 
 .tab-panel {
@@ -55,8 +55,8 @@ body {
 
 /* Code block styles */
 .code-block {
-	@apply bg-[#1E1E1E] p-4 rounded-lg overflow-x-auto;
-	@apply font-mono text-sm;
+	@apply bg-[#1E1E1E] p-2 sm:p-4 rounded-lg overflow-x-auto;
+	@apply font-mono text-xs sm:text-sm;
 }
 
 /* Animation */
@@ -77,7 +77,7 @@ body {
 
 /* Prism.js customization */
 pre[class*="language-"] {
-	@apply bg-[#1E1E1E] rounded-lg p-4 overflow-x-auto;
+	@apply bg-[#1E1E1E] rounded-lg p-2 sm:p-4 overflow-x-auto;
 	margin: 0;
 	border-radius: 0.5rem;
 	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -85,7 +85,7 @@ pre[class*="language-"] {
 }
 
 code[class*="language-"] {
-	@apply font-mono text-sm;
+	@apply font-mono text-xs sm:text-sm;
 	text-shadow: none;
 	color: #e6e6e6;
 }
@@ -130,7 +130,6 @@ code[class*="language-"] {
 @keyframes rotateBorder {
 	0% {
 		background-position: 0% 50%;
-		
 	}
 	50% {
 		background-position: 100% 50%;
@@ -140,25 +139,101 @@ code[class*="language-"] {
 	}
 }
 
-
-
 /* Animation class */
 .animate-border {
 	animation: rotateBorder 3s linear infinite;
 	background-size: 300% 300%;
-
 }
 
-
-
 h2 {
-	@apply font-sans font-[600] text-[52px] leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text;
+	@apply font-sans font-[600] text-[32px] sm:text-[42px] md:text-[52px] leading-[38px] sm:leading-[48px] md:leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text;
 }
 
 p {
-	@apply font-mono font-[400] leading-[27px] text-[22px];
+	@apply font-mono font-[400] leading-[20px] sm:leading-[24px] md:leading-[27px] text-[16px] sm:text-[18px] md:text-[22px];
 }
 
 .program-details-btn {
-	@apply px-4 py-2 font-mono rounded-t text-lg;
+	@apply px-3 py-1.5 sm:px-4 sm:py-2 font-mono rounded-t text-sm sm:text-lg;
+}
+
+/* Mobile-first responsive utilities */
+@media (max-width: 640px) {
+	.container {
+		@apply px-2;
+	}
+
+	.grid {
+		@apply gap-2;
+	}
+
+	.text-responsive {
+		@apply text-sm;
+	}
+
+	.heading-responsive {
+		@apply text-xl;
+	}
+
+	.padding-responsive {
+		@apply p-2;
+	}
+
+	.margin-responsive {
+		@apply m-2;
+	}
+}
+
+/* Tablet responsive utilities */
+@media (min-width: 641px) and (max-width: 1024px) {
+	.container {
+		@apply px-4;
+	}
+
+	.grid {
+		@apply gap-4;
+	}
+
+	.text-responsive {
+		@apply text-base;
+	}
+
+	.heading-responsive {
+		@apply text-2xl;
+	}
+
+	.padding-responsive {
+		@apply p-4;
+	}
+
+	.margin-responsive {
+		@apply m-4;
+	}
+}
+
+/* Desktop responsive utilities */
+@media (min-width: 1025px) {
+	.container {
+		@apply px-6;
+	}
+
+	.grid {
+		@apply gap-6;
+	}
+
+	.text-responsive {
+		@apply text-lg;
+	}
+
+	.heading-responsive {
+		@apply text-3xl;
+	}
+
+	.padding-responsive {
+		@apply p-6;
+	}
+
+	.margin-responsive {
+		@apply m-6;
+	}
 }

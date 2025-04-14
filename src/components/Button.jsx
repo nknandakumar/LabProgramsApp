@@ -1,14 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
-const Button = ({ path, name }) => {
+
+const Button = ({ onClick, name }) => {
 	return (
-		<Link to={path} className="mt-6">
-			<span className=" border px-1 py-5 rounded-lg group">
-				<button className="font-sans bg-white font-bold text-black uppercase px-4 py- font-[600]  tracking-wide leading-[50px] text-[16px] cursor-pointer rounded-lg group-hover:underline">
-					{name}
-				</button>
-			</span>
-		</Link>
+		<span className="border pt-3 pb-4 px-1 md:py-5 rounded-lg group">
+			<button
+				onClick={onClick}
+				className="font-sans bg-white font-bold text-black uppercase px-2 md:px-4 font-[600] tracking-wide leading-[40px] md:leading-[50px] text-[14px] sm:text-[16px] md:text-[16px] cursor-pointer rounded-lg group-hover:underline"
+			>
+				{name}
+			</button>
+		</span>
 	);
 };
 
