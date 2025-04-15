@@ -28,7 +28,7 @@ const Subjects = () => {
 				<h2 className="md:text-center font-sans text-3xl sm:text-4xl font-bold">
 					Subjects
 				</h2>
-				<p className="md:text-center font-mono text-base sm:text-lg font-normal max-w-2xl">
+				<p className=" font-mono text-base sm:text-lg font-normal max-w-2xl">
 					Select subjects below to explore the available lab programs and start
 					learning.
 				</p>

@@ -8,6 +8,7 @@ import TabButton from "./../components/TabButton";
 const ProgramDetailPage = () => {
 	const { subject = "", id } = useParams();
 	const [activeTab, setActiveTab] = useState("code");
+	const [copySuccess, setCopySuccess] = useState(false);
 
 	const cleanId = id ? id.replace(/\D/g, "") : "";
 	const program = getProgram(subject, Number(cleanId));
@@ -17,6 +18,16 @@ const ProgramDetailPage = () => {
 			window.Prism.highlightAll();
 		}
 	}, [activeTab]);
+
+	const handleCopyCode = async () => {
+		try {
+			await navigator.clipboard.writeText(code);
+			setCopySuccess(true);
+			setTimeout(() => setCopySuccess(false), 2000);
+		} catch (err) {
+			console.error("Failed to copy text: ", err);
+		}
+	};
 
 	if (!program) {
 		return (
@@ -52,7 +63,13 @@ const ProgramDetailPage = () => {
 		switch (activeTab) {
 			case "code":
 				return (
-					<div className="w-full bg-[#1E1E1E] rounded-b-md rounded-r-md p-2 sm:p-4 overflow-x-auto">
+					<div className="w-full bg-[#1E1E1E] rounded-b-md rounded-r-md p-2 sm:p-4 overflow-x-auto relative">
+						<button
+							onClick={handleCopyCode}
+							className="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm transition-colors duration-200"
+						>
+							{copySuccess ? "Copied!" : "Copy Code"}
+						</button>
 						<pre className="line-numbers language-html text-xs sm:text-sm">
 							<code className="language-html">{formatCode(code)}</code>
 						</pre>
@@ -64,7 +81,7 @@ const ProgramDetailPage = () => {
 						<iframe
 							srcDoc={code}
 							title="preview"
-							className="w-full h-[300px] sm:h-[400px] md:h-[500px] border-0"
+							className="w-full h-[400px] sm:h-[500px] md:h-[600px] border-0"
 							sandbox="allow-scripts"
 						/>
 					</div>
@@ -144,27 +161,31 @@ const ProgramDetailPage = () => {
 				</div>
 
 				<div className="w-full border border-gray-800 rounded-lg overflow-hidden p-2 sm:p-4">
-					<div className="flex flex-wrap gap-1 sm:gap-2">
-						<TabButton
-							name="Code"
-							conditionValue="code"
-							activeTab={activeTab}
-							setActiveTab={setActiveTab}
-						/>
-						<TabButton
-							name="Live preview"
-							conditionValue="preview"
-							activeTab={activeTab}
-							setActiveTab={setActiveTab}
-						/>
-						<TabButton
-							name="Explain Me"
-							conditionValue="explain"
-							activeTab={activeTab}
-							setActiveTab={setActiveTab}
-						/>
+					<div className="sticky top-0 z-10 bg-[#1E1E1E] p-2 -mx-2 sm:-mx-4">
+						<div className="flex flex-wrap gap-1 sm:gap-2">
+							<TabButton
+								name="Code"
+								conditionValue="code"
+								activeTab={activeTab}
+								setActiveTab={setActiveTab}
+							/>
+							<TabButton
+								name="Live preview"
+								conditionValue="preview"
+								activeTab={activeTab}
+								setActiveTab={setActiveTab}
+							/>
+							<TabButton
+								name="Explain Me"
+								conditionValue="explain"
+								activeTab={activeTab}
+								setActiveTab={setActiveTab}
+							/>
+						</div>
 					</div>
-					{renderTabContent()}
+					<div className="overflow-auto max-h-[calc(100vh-300px)]">
+						{renderTabContent()}
+					</div>
 				</div>
 			</div>
 		</div>
