@@ -47,7 +47,7 @@ const Home = () => {
 				</div>
 
 				{/* Code Editor Preview Section */}
-				<div className="w-full max-w-4xl mx-auto -mt-[180px] sm:-mt-[100px] md:-mt-[350px] px-4">
+				<div className="w-full max-w-4xl mx-auto -mt-[180px] sm:-mt-[100px] md:-mt-[300px] px-4">
 					<img
 						src="/CodeImg.avif"
 						alt="Hero section Image"

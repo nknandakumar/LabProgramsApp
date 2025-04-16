@@ -4,11 +4,14 @@ import { useParams } from "react-router-dom";
 import { getProgram } from "../data/programs.js";
 import { Link } from "react-router-dom";
 import TabButton from "./../components/TabButton";
+import ChatBot from "../components/ChatBot";
+import AIButton from "../components/AIButton";
 
 const ProgramDetailPage = () => {
 	const { subject = "", id } = useParams();
 	const [activeTab, setActiveTab] = useState("code");
 	const [copySuccess, setCopySuccess] = useState(false);
+	const [isChatOpen, setIsChatOpen] = useState(false);
 
 	const cleanId = id ? id.replace(/\D/g, "") : "";
 	const program = getProgram(subject, Number(cleanId));
@@ -63,13 +66,45 @@ const ProgramDetailPage = () => {
 		switch (activeTab) {
 			case "code":
 				return (
-					<div className="w-full bg-[#1E1E1E] rounded-b-md rounded-r-md p-2 sm:p-4 overflow-x-auto relative">
-						<button
-							onClick={handleCopyCode}
-							className="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm transition-colors duration-200"
-						>
-							{copySuccess ? "Copied!" : "Copy Code"}
-						</button>
+					<div className="w-full bg-[#0C0C0C] p-2 sm:p-4 overflow-x-auto relative">
+						<div className="flex justify-end mb-2">
+							<button
+								onClick={handleCopyCode}
+								className="flex items-center gap-2 px-3 py-1.5 bg-[#1C1C1C] text-gray-300 hover:text-white rounded text-sm"
+							>
+								{copySuccess ? (
+									<>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											className="h-4 w-4"
+											viewBox="0 0 20 20"
+											fill="currentColor"
+										>
+											<path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+											<path
+												fillRule="evenodd"
+												d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+												clipRule="evenodd"
+											/>
+										</svg>
+										Copied!
+									</>
+								) : (
+									<>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											className="h-4 w-4"
+											viewBox="0 0 20 20"
+											fill="currentColor"
+										>
+											<path d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z" />
+											<path d="M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H6zm3 0a1 1 0 000 2h3a1 1 0 100-2H9zm3 0a1 1 0 000 2h.01a1 1 0 100-2H12zm0 3a1 1 0 000 2h.01a1 1 0 100-2H12zm-3 0a1 1 0 000 2h3a1 1 0 100-2H9zm-3 0a1 1 0 000 2h.01a1 1 0 100-2H6z" />
+										</svg>
+										Copy code
+									</>
+								)}
+							</button>
+						</div>
 						<pre className="line-numbers language-html text-xs sm:text-sm">
 							<code className="language-html">{formatCode(code)}</code>
 						</pre>
@@ -77,18 +112,18 @@ const ProgramDetailPage = () => {
 				);
 			case "preview":
 				return (
-					<div className="w-full bg-gray-400 rounded-md p-2 sm:p-4">
+					<div className="w-full h-full bg-gray-400">
 						<iframe
 							srcDoc={code}
 							title="preview"
-							className="w-full h-[400px] sm:h-[500px] md:h-[600px] border-0"
+							className="w-full h-[calc(100vh-300px)] min-h-[500px] border-0"
 							sandbox="allow-scripts"
 						/>
 					</div>
 				);
 			case "explain":
 				return (
-					<div className="w-full bg-[#1E1E1E] rounded-b-md rounded-r-md p-2 sm:p-4 overflow-x-auto">
+					<div className="w-full bg-[#0C0C0C] p-2 sm:p-4 overflow-x-auto">
 						<div className="text-white">
 							<h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-4">
 								Program Explanation
@@ -160,8 +195,8 @@ const ProgramDetailPage = () => {
 					</p>
 				</div>
 
-				<div className="w-full border border-gray-800 rounded-lg overflow-hidden p-2 sm:p-4">
-					<div className="sticky top-0 z-10 bg-[#1E1E1E] p-2 -mx-2 sm:-mx-4">
+				<div className="w-full border border-gray-800 rounded-lg overflow-hidden">
+					<div className="sticky top-0 z-10 bg-[#0C0C0C] border-b border-gray-800 p-2 sm:p-4">
 						<div className="flex flex-wrap gap-1 sm:gap-2">
 							<TabButton
 								name="Code"
@@ -183,11 +218,15 @@ const ProgramDetailPage = () => {
 							/>
 						</div>
 					</div>
-					<div className="overflow-auto max-h-[calc(100vh-300px)]">
+					<div className="overflow-auto h-[calc(100vh-300px)] p-2 sm:p-4">
 						{renderTabContent()}
 					</div>
 				</div>
 			</div>
+
+			{/* AI Assistant */}
+			<AIButton onClick={() => setIsChatOpen(true)} />
+			<ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
 		</div>
 	);
 };
