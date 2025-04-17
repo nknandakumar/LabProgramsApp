@@ -13,6 +13,7 @@ const ChatBot = ({ isOpen, onClose }) => {
 	const [inputMessage, setInputMessage] = useState("");
 	const [selectedSubject, setSelectedSubject] = useState(null);
 	const [showPrograms, setShowPrograms] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleSubjectClick = (subject) => {
 		setSelectedSubject(subject);
@@ -31,19 +32,54 @@ const ChatBot = ({ isOpen, onClose }) => {
 		setSelectedSubject(null);
 	};
 
-	const handleSendMessage = (e) => {
+	const handleSendMessage = async (e) => {
 		e.preventDefault();
 		if (!inputMessage.trim()) return;
 
-		setMessages([
-			...messages,
-			{
-				type: "user",
-				content: inputMessage,
-				timestamp: "Just now",
-			},
-		]);
+		// Add user message to chat
+		const userMessage = {
+			type: "user",
+			content: inputMessage,
+			timestamp: "Just now",
+		};
+
+		setMessages((prevMessages) => [...prevMessages, userMessage]);
 		setInputMessage("");
+		setIsLoading(true);
+
+		try {
+			// Send message to backend API
+			const response = await fetch("http://localhost:3001/api/explain", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ code: inputMessage }),
+			});
+
+			const data = await response.json();
+			console.log(data);
+
+			// Add bot response to chat
+			const botMessage = {
+				type: "bot",
+				content: data.explanation || "No explanation returned.",
+				timestamp: "Just now",
+			};
+
+			setMessages((prevMessages) => [...prevMessages, botMessage]);
+		} catch (err) {
+			console.error("Error fetching explanation:", err);
+
+			// Add error message to chat
+			const errorMessage = {
+				type: "bot",
+				content: "Error fetching explanation. Please try again.",
+				timestamp: "Just now",
+			};
+
+			setMessages((prevMessages) => [...prevMessages, errorMessage]);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	if (!isOpen) return null;
@@ -100,6 +136,17 @@ const ChatBot = ({ isOpen, onClose }) => {
 						</div>
 					</div>
 				))}
+				{isLoading && (
+					<div className="flex justify-start">
+						<div className="max-w-[80%] rounded-2xl px-4 py-2 bg-[#2A2A2A] text-white rounded-bl-none">
+							<div className="flex items-center gap-2">
+								<div className="w-4 h-4 rounded-full bg-purple-500 animate-pulse"></div>
+								<div className="w-4 h-4 rounded-full bg-purple-500 animate-pulse delay-100"></div>
+								<div className="w-4 h-4 rounded-full bg-purple-500 animate-pulse delay-200"></div>
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 
 			{/* Program Selection */}
@@ -211,19 +258,44 @@ const ChatBot = ({ isOpen, onClose }) => {
 						onChange={(e) => setInputMessage(e.target.value)}
 						placeholder="Message AI Assistant..."
 						className="flex-1 bg-[#2A2A2A] text-white px-4 py-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-purple-500 min-h-[100px] max-h-[200px] resize-y"
+						disabled={isLoading}
 					/>
 					<button
 						type="submit"
 						className="p-2 h-10 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition-colors self-end"
+						disabled={isLoading}
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="currentColor"
-							className="w-5 h-5"
-						>
-							<path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-						</svg>
+						{isLoading ? (
+							<svg
+								className="animate-spin h-5 w-5 text-white"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
+								<circle
+									className="opacity-25"
+									cx="12"
+									cy="12"
+									r="10"
+									stroke="currentColor"
+									strokeWidth="4"
+								></circle>
+								<path
+									className="opacity-75"
+									fill="currentColor"
+									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+								></path>
+							</svg>
+						) : (
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="currentColor"
+								className="w-5 h-5"
+							>
+								<path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+							</svg>
+						)}
 					</button>
 				</form>
 			</div>
