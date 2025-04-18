@@ -1,10 +1,13 @@
-import React from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAllPrograms } from "../data/programs";
 import { Link } from "react-router-dom";
 import Card from "../components/Card";
+import AIButton from "../components/AIButton";
+import ChatBot from "../components/ChatBot";
 
 const ProgramListPage = () => {
+	const [isChatOpen, setIsChatOpen] = useState(false);
 	const { subject = "" } = useParams();
 	const programs = getAllPrograms(subject);
 	console.log(programs);
@@ -37,6 +40,9 @@ const ProgramListPage = () => {
 					<Card key={program.id} program={program} subject={subject} />
 				))}
 			</div>
+				{/* AI Assistant */}
+				<AIButton onClick={() => setIsChatOpen(true)} />
+				<ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
 		</div>
 	);
 };

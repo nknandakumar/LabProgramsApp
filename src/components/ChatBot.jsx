@@ -1,19 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getAllPrograms } from "../data/programs.js";
 
+const STORAGE_KEY = "chat_history";
+const MAX_MESSAGES = 50; // Limit number of stored messages
+const TYPING_SPEED = 30; // milliseconds per character
+
 const ChatBot = ({ isOpen, onClose }) => {
-	const [messages, setMessages] = useState([
-		{
-			type: "bot",
-			content:
-				"Hello! I'm your AI assistant. Select a program category and specific program to discuss, or ask me anything about programming.",
-			timestamp: "Just now",
-		},
-	]);
+	const [messages, setMessages] = useState(() => {
+		// Initialize messages from local storage
+		const savedMessages = localStorage.getItem(STORAGE_KEY);
+		return savedMessages
+			? JSON.parse(savedMessages)
+			: [
+					{
+						type: "bot",
+						content:
+							"Hello! I'm your AI assistant. Select a program category and specific program to discuss, or ask me anything about programming.",
+						timestamp: "Just now",
+					},
+			  ];
+	});
 	const [inputMessage, setInputMessage] = useState("");
 	const [selectedSubject, setSelectedSubject] = useState(null);
 	const [showPrograms, setShowPrograms] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [typingMessage, setTypingMessage] = useState("");
+	const chatEndRef = useRef(null);
+	const typingTimeoutRef = useRef(null);
+
+	// Auto scroll to bottom when messages change
+	useEffect(() => {
+		chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	}, [messages, typingMessage]);
+
+	// Save messages to local storage whenever they change
+	useEffect(() => {
+		if (messages.length > 0) {
+			// Keep only the last MAX_MESSAGES
+			const messagesToStore = messages.slice(-MAX_MESSAGES);
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(messagesToStore));
+		}
+	}, [messages]);
+
+	const scrollToBottom = () => {
+		chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	};
+
+	const typeMessage = (message, index = 0) => {
+		if (index < message.length) {
+			setTypingMessage(message.substring(0, index + 1));
+			typingTimeoutRef.current = setTimeout(() => {
+				typeMessage(message, index + 1);
+			}, TYPING_SPEED);
+		} else {
+			setTypingMessage("");
+			setMessages(prevMessages => [...prevMessages, {
+				type: "bot",
+				content: message,
+				timestamp: new Date().toLocaleTimeString(),
+			}]);
+		}
+	};
 
 	const handleSubjectClick = (subject) => {
 		setSelectedSubject(subject);
@@ -32,6 +79,55 @@ const ChatBot = ({ isOpen, onClose }) => {
 		setSelectedSubject(null);
 	};
 
+	const clearChatHistory = () => {
+		localStorage.removeItem(STORAGE_KEY);
+		setMessages([
+			{
+				type: "bot",
+				content:
+					"Hello! I'm your AI assistant. Select a program category and specific program to discuss, or ask me anything about programming.",
+				timestamp: "Just now",
+			},
+		]);
+	};
+
+	const formatMessage = (content) => {
+		// Split content into lines
+		const lines = content.split("\n");
+		return lines.map((line, index) => {
+			// Check if line starts with specific keywords
+			if (line.startsWith("Program:")) {
+				return (
+					<div key={index} className="font-semibold text-purple-400">
+						{line}
+					</div>
+				);
+			} else if (line.startsWith("Focus:")) {
+				return (
+					<div key={index} className="text-gray-300">
+						{line}
+					</div>
+				);
+			} else if (line.startsWith("Code:")) {
+				return (
+					<div key={index} className="font-semibold text-purple-400 mt-2">
+						{line}
+					</div>
+				);
+			} else if (line.trim() === "") {
+				return <div key={index} className="h-2"></div>;
+			} else {
+				return (
+					<div key={index} className="font-mono text-sm">
+						{line}
+					</div>
+				);
+			}
+		});
+	};
+
+	
+
 	const handleSendMessage = async (e) => {
 		e.preventDefault();
 		if (!inputMessage.trim()) return;
@@ -40,12 +136,13 @@ const ChatBot = ({ isOpen, onClose }) => {
 		const userMessage = {
 			type: "user",
 			content: inputMessage,
-			timestamp: "Just now",
+			timestamp: new Date().toLocaleTimeString(),
 		};
 
 		setMessages((prevMessages) => [...prevMessages, userMessage]);
 		setInputMessage("");
 		setIsLoading(true);
+		scrollToBottom();
 
 		try {
 			// Send message to backend API
@@ -58,25 +155,11 @@ const ChatBot = ({ isOpen, onClose }) => {
 			const data = await response.json();
 			console.log(data);
 
-			// Add bot response to chat
-			const botMessage = {
-				type: "bot",
-				content: data.explanation || "No explanation returned.",
-				timestamp: "Just now",
-			};
-
-			setMessages((prevMessages) => [...prevMessages, botMessage]);
+			// Start typing animation for the response
+			typeMessage(data.explanation || "No explanation returned.");
 		} catch (err) {
 			console.error("Error fetching explanation:", err);
-
-			// Add error message to chat
-			const errorMessage = {
-				type: "bot",
-				content: "Error fetching explanation. Please try again.",
-				timestamp: "Just now",
-			};
-
-			setMessages((prevMessages) => [...prevMessages, errorMessage]);
+			typeMessage("Error fetching explanation. Please try again.");
 		} finally {
 			setIsLoading(false);
 		}
@@ -87,35 +170,58 @@ const ChatBot = ({ isOpen, onClose }) => {
 	const programsList = selectedSubject ? getAllPrograms(selectedSubject) : [];
 
 	return (
-		<div className="fixed inset-0 bg-[#1E1E1E] z-50 flex flex-col w-full h-full">
+		<div className="fixed inset-0 bg-[#1E1E1E] z-50 flex flex-col w-full h-full shadow-[inset_0_0_50px_rgba(0,0,0,0.5)]">
 			{/* Header */}
-			<div className="flex items-center justify-between p-4 border-b border-gray-800">
+			<div className="flex items-center justify-between p-4 border-b border-gray-800 bg-[#1A1A1A] shadow-lg">
 				<div className="flex items-center gap-2">
-					<div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center">
+					<div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
 						<span className="text-white font-semibold">AI</span>
 					</div>
 					<h2 className="text-white text-lg font-medium">AI Assistant</h2>
 				</div>
-				<button onClick={onClose} className="text-gray-400 hover:text-gray-200">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						className="h-6 w-6"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
+				<div className="flex items-center gap-2">
+					<button
+						onClick={clearChatHistory}
+						className="text-gray-400 hover:text-gray-200 p-2 rounded-full hover:bg-[#2A2A2A] transition-colors"
+						title="Clear chat history"
 					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M6 18L18 6M6 6l12 12"
-						/>
-					</svg>
-				</button>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-5 w-5"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+						>
+							<path
+								fillRule="evenodd"
+								d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+								clipRule="evenodd"
+							/>
+						</svg>
+					</button>
+					<button
+						onClick={onClose}
+						className="text-gray-400 hover:text-gray-200"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-6 w-6"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M6 18L18 6M6 6l12 12"
+							/>
+						</svg>
+					</button>
+				</div>
 			</div>
 
 			{/* Chat Area */}
-			<div className="flex-1 overflow-y-auto p-4 space-y-4">
+			<div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-none">
 				{messages.map((message, index) => (
 					<div
 						key={index}
@@ -124,21 +230,50 @@ const ChatBot = ({ isOpen, onClose }) => {
 						}`}
 					>
 						<div
-							className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+							className={`max-w-[80%] rounded-2xl px-4 py-3 ${
 								message.type === "user"
-									? "bg-purple-500 text-white rounded-br-none"
-									: "bg-[#2A2A2A] text-white rounded-bl-none"
+									? "bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-br-none shadow-lg"
+									: "bg-[#2A2A2A] text-white rounded-bl-none shadow-lg"
 							}`}
 						>
-							<pre className="whitespace-pre-wrap font-sans">
-								{message.content}
-							</pre>
+							<div className="whitespace-pre-wrap font-sans">
+								{formatMessage(message.content)}
+							</div>
+							<div className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="h-3 w-3"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+								>
+									<path
+										fillRule="evenodd"
+										d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+										clipRule="evenodd"
+									/>
+								</svg>
+								{message.timestamp}
+							</div>
 						</div>
 					</div>
 				))}
-				{isLoading && (
+				{typingMessage && (
 					<div className="flex justify-start">
-						<div className="max-w-[80%] rounded-2xl px-4 py-2 bg-[#2A2A2A] text-white rounded-bl-none">
+						<div className="max-w-[80%] rounded-2xl px-4 py-3 bg-[#2A2A2A] text-white rounded-bl-none shadow-lg">
+							<div className="whitespace-pre-wrap font-sans">
+								{formatMessage(typingMessage)}
+							</div>
+							<div className="flex items-center gap-2 mt-2">
+								<div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+								<div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse delay-100"></div>
+								<div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse delay-200"></div>
+							</div>
+						</div>
+					</div>
+				)}
+				{isLoading && !typingMessage && (
+					<div className="flex justify-start">
+						<div className="max-w-[80%] rounded-2xl px-4 py-3 bg-[#2A2A2A] text-white rounded-bl-none shadow-lg">
 							<div className="flex items-center gap-2">
 								<div className="w-4 h-4 rounded-full bg-purple-500 animate-pulse"></div>
 								<div className="w-4 h-4 rounded-full bg-purple-500 animate-pulse delay-100"></div>
@@ -147,11 +282,12 @@ const ChatBot = ({ isOpen, onClose }) => {
 						</div>
 					</div>
 				)}
+				<div ref={chatEndRef} />
 			</div>
 
 			{/* Program Selection */}
 			{showPrograms && (
-				<div className="absolute bottom-[80px] left-0 right-0 bg-[#2A2A2A] border-t border-gray-800 max-h-[40vh] overflow-y-auto">
+				<div className="absolute bottom-[80px] left-0 right-0 bg-[#2A2A2A] border-t border-gray-800 max-h-[40vh] overflow-y-auto shadow-lg">
 					<div className="p-4">
 						<div className="flex justify-between items-center mb-3">
 							<h3 className="text-white text-lg font-medium">
@@ -225,78 +361,79 @@ const ChatBot = ({ isOpen, onClose }) => {
 			)}
 
 			{/* Input Area */}
-			<div className="border-t border-gray-800 p-4 bg-[#1E1E1E]">
-				<div className="flex items-center gap-2">
-					{/* Subject Selection Buttons */}
-					<div className="flex gap-2">
-						<button
-							onClick={() => handleSubjectClick("cma")}
-							className={`px-3 py-1.5 rounded-full text-sm ${
-								selectedSubject === "cma"
-									? "bg-purple-500 text-white"
-									: "bg-[#2A2A2A] text-gray-300 hover:bg-[#3A3A3A]"
-							}`}
-						>
-							CMA
-						</button>
-						<button
-							onClick={() => handleSubjectClick("python")}
-							className={`px-3 py-1.5 rounded-full text-sm ${
-								selectedSubject === "python"
-									? "bg-purple-500 text-white"
-									: "bg-[#2A2A2A] text-gray-300 hover:bg-[#3A3A3A]"
-							}`}
-						>
-							Python
-						</button>
-					</div>
-				</div>
-
-				<form onSubmit={handleSendMessage} className="mt-3 flex gap-2">
+			<div className="border-t border-gray-800 p-4  shadow-lg">
+				<form
+					onSubmit={handleSendMessage}
+					className="mt-3 flex flex-col items-center gap-4 max-w-2xl mx-auto"
+				>
 					<textarea
 						value={inputMessage}
 						onChange={(e) => setInputMessage(e.target.value)}
 						placeholder="Message AI Assistant..."
-						className="flex-1 bg-[#2A2A2A] text-white px-4 py-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-purple-500 min-h-[100px] max-h-[200px] resize-y"
+						className="w-full bg-[#2A2A2A] text-white px-4 py-2 rounded-xl border-0 outline-0 min-h-[100px] max-h-[150px] resize-y shadow-inner"
 						disabled={isLoading}
 					/>
-					<button
-						type="submit"
-						className="p-2 h-10 rounded-full bg-purple-500 text-white hover:bg-purple-600 transition-colors self-end"
-						disabled={isLoading}
-					>
-						{isLoading ? (
-							<svg
-								className="animate-spin h-5 w-5 text-white"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
+					<div className="flex items-center gap-4 w-full">
+						<div className="flex gap-2 flex-1  justify-start">
+							<button
+								onClick={() => handleSubjectClick("cma")}
+								className={`px-3 py-1.5 rounded-xl cursor-pointer text-sm transition-all ${
+									selectedSubject === "cma"
+										? "bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg"
+										: "bg-[#2A2A2A] text-gray-300 hover:bg-[#3A3A3A] shadow-md"
+								}`}
 							>
-								<circle
-									className="opacity-25"
-									cx="12"
-									cy="12"
-									r="10"
-									stroke="currentColor"
-									strokeWidth="4"
-								></circle>
-								<path
-									className="opacity-75"
+								CMA
+							</button>
+							<button
+								onClick={() => handleSubjectClick("python")}
+								className={`px-3 py-1.5 rounded-xl cursor-pointer text-sm transition-all ${
+									selectedSubject === "python"
+										? "bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg"
+										: "bg-[#2A2A2A] text-gray-300 hover:bg-[#3A3A3A] shadow-md"
+								}`}
+							>
+								Python
+							</button>
+						</div>
+						<button
+							type="submit"
+							className="p-2 h-10 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 transition-colors shadow-lg"
+							disabled={isLoading}
+						>
+							{isLoading ? (
+								<svg
+									className="animate-spin h-5 w-5 text-white"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+									></circle>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									></path>
+								</svg>
+							) : (
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
 									fill="currentColor"
-									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-								></path>
-							</svg>
-						) : (
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="currentColor"
-								className="w-5 h-5"
-							>
-								<path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-							</svg>
-						)}
-					</button>
+									className="w-5 h-5"
+								>
+									<path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+								</svg>
+							)}
+						</button>
+					</div>
 				</form>
 			</div>
 		</div>

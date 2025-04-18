@@ -1,8 +1,11 @@
-import React from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import AIButton from "../components/AIButton";
+import ChatBot from "../components/ChatBot";
 
 const Subjects = () => {
+	const [isChatOpen, setIsChatOpen] = useState(false);
 	const navigate = useNavigate();
 	const subjects = [
 		{
@@ -61,6 +64,9 @@ const Subjects = () => {
 					))}
 				</div>
 			</div>
+			{/* AI Assistant */}
+			<AIButton onClick={() => setIsChatOpen(true)} />
+			<ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
 		</div>
 	);
 };
