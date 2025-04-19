@@ -12,6 +12,7 @@ const ProgramDetailPage = () => {
 	const [activeTab, setActiveTab] = useState("code");
 	const [copySuccess, setCopySuccess] = useState(false);
 	const [isChatOpen, setIsChatOpen] = useState(false);
+	const [programForChat, setProgramForChat] = useState(null);
 
 	const cleanId = id ? id.replace(/\D/g, "") : "";
 	const program = getProgram(subject, Number(cleanId));
@@ -29,6 +30,15 @@ const ProgramDetailPage = () => {
 			setTimeout(() => setCopySuccess(false), 2000);
 		} catch (err) {
 			console.error("Failed to copy text: ", err);
+		}
+	};
+
+	const handleTabChange = (tab) => {
+		if (tab === "explain" && program) {
+			setProgramForChat(program);
+			setIsChatOpen(true);
+		} else {
+			setActiveTab(tab);
 		}
 	};
 
@@ -121,55 +131,6 @@ const ProgramDetailPage = () => {
 						/>
 					</div>
 				);
-			case "explain":
-				return (
-					<div className="w-full bg-[#0C0C0C] p-2 sm:p-4 overflow-x-auto">
-						<div className="text-white">
-							<h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-4">
-								Program Explanation
-							</h3>
-							<p className="mb-2 sm:mb-4 text-sm sm:text-base">
-								This program{" "}
-								{focused_on
-									? `focuses on ${focused_on}`
-									: "demonstrates key programming concepts"}
-								. It showcases important techniques that are essential for
-								understanding {program_name}.
-							</p>
-							<div className="bg-gray-800 p-2 sm:p-4 rounded-lg">
-								<h4 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">
-									Key Components:
-								</h4>
-								<ul className="list-disc pl-4 sm:pl-5 space-y-1 sm:space-y-2 text-sm sm:text-base">
-									<li>
-										The program structure follows best practices for{" "}
-										{subject === "cma"
-											? "web development"
-											: "Python programming"}
-									</li>
-									<li>
-										{focused_on
-											? `It showcases proper implementation of ${focused_on}`
-											: "It implements core programming concepts effectively"}
-									</li>
-									<li>
-										The code is organized for readability and maintainability
-									</li>
-								</ul>
-							</div>
-							<div className="mt-4 sm:mt-6">
-								<h4 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">
-									How It Works:
-								</h4>
-								<p className="text-sm sm:text-base">
-									The program executes in a sequential manner, with each section
-									building upon previous functionality. This creates a cohesive
-									solution that addresses the requirements of {program_name}.
-								</p>
-							</div>
-						</div>
-					</div>
-				);
 			default:
 				return null;
 		}
@@ -202,19 +163,19 @@ const ProgramDetailPage = () => {
 								name="Code"
 								conditionValue="code"
 								activeTab={activeTab}
-								setActiveTab={setActiveTab}
+								setActiveTab={handleTabChange}
 							/>
 							<TabButton
 								name="Live preview"
 								conditionValue="preview"
 								activeTab={activeTab}
-								setActiveTab={setActiveTab}
+								setActiveTab={handleTabChange}
 							/>
 							<TabButton
 								name="Explain Me"
 								conditionValue="explain"
 								activeTab={activeTab}
-								setActiveTab={setActiveTab}
+								setActiveTab={handleTabChange}
 							/>
 						</div>
 					</div>
@@ -226,7 +187,14 @@ const ProgramDetailPage = () => {
 
 			{/* AI Assistant */}
 			<AIButton onClick={() => setIsChatOpen(true)} />
-			<ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+			<ChatBot
+				isOpen={isChatOpen}
+				onClose={() => {
+					setIsChatOpen(false);
+					setActiveTab("code"); // Return to code tab when chatbot is closed
+				}}
+				initialProgram={programForChat}
+			/>
 		</div>
 	);
 };

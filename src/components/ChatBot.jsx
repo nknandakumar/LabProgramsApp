@@ -5,7 +5,7 @@ const STORAGE_KEY = "chat_history";
 const MAX_MESSAGES = 50; // Limit number of stored messages
 const TYPING_SPEED = 5; // milliseconds per character (reduced from 30ms to 5ms)
 
-const ChatBot = ({ isOpen, onClose }) => {
+const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 	const [messages, setMessages] = useState(() => {
 		// Initialize messages from local storage
 		const savedMessages = localStorage.getItem(STORAGE_KEY);
@@ -41,6 +41,15 @@ const ChatBot = ({ isOpen, onClose }) => {
 			localStorage.setItem(STORAGE_KEY, JSON.stringify(messagesToStore));
 		}
 	}, [messages]);
+
+	// Handle initialProgram prop
+	useEffect(() => {
+		if (initialProgram && isOpen) {
+			const programMessage = `Please explain this program: ${initialProgram.program_name}\n\nCode:\n${initialProgram.code}`;
+			setInputMessage(programMessage);
+			handleSendMessage({ preventDefault: () => {} });
+		}
+	}, [initialProgram, isOpen]);
 
 	const scrollToBottom = () => {
 		chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
