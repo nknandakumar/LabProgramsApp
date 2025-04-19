@@ -6,6 +6,12 @@ import { Link } from "react-router-dom";
 import TabButton from "./../components/TabButton";
 import ChatBot from "../components/ChatBot";
 import AIButton from "../components/AIButton";
+import NameCollectionModal from "../components/NameCollectionModal";
+import {
+	getUserName,
+	setUserName,
+	getPersonalizedMessage,
+} from "../utils/userUtils";
 
 const ProgramDetailPage = () => {
 	const { subject = "", id } = useParams();
@@ -20,9 +26,16 @@ const ProgramDetailPage = () => {
 	const [copySuccess, setCopySuccess] = useState(false);
 	const [isChatOpen, setIsChatOpen] = useState(false);
 	const [programForChat, setProgramForChat] = useState(null);
+	const [showNameModal, setShowNameModal] = useState(false);
 
 	const cleanId = id ? id.replace(/\D/g, "") : "";
 	const program = getProgram(subject, Number(cleanId));
+
+	useEffect(() => {
+		if (!getUserName()) {
+			setShowNameModal(true);
+		}
+	}, []);
 
 	useEffect(() => {
 		if (window.Prism) {
@@ -40,6 +53,11 @@ const ProgramDetailPage = () => {
 			});
 		}
 	}, [program]);
+
+	const handleNameSubmit = (name) => {
+		setUserName(name);
+		setShowNameModal(false);
+	};
 
 	const handleCopyCode = async () => {
 		try {
@@ -81,7 +99,10 @@ const ProgramDetailPage = () => {
 			<div className="p-4 text-center">
 				<h1 className="text-xl font-bold mb-2">Program not found</h1>
 				<p className="text-gray-600">
-					The program you are looking for does not exist.
+					{getPersonalizedMessage(
+						"Sorry [Name], this program doesn't exist.",
+						"This program doesn't exist."
+					)}
 				</p>
 			</div>
 		);
@@ -242,7 +263,7 @@ const ProgramDetailPage = () => {
 													clipRule="evenodd"
 												/>
 											</svg>
-											Copied!
+											{getPersonalizedMessage("Copied, [Name]!", "Copied!")}
 										</>
 									) : (
 										<>
@@ -338,6 +359,13 @@ const ProgramDetailPage = () => {
 					setActiveTab("code"); // Return to code tab when chatbot is closed
 				}}
 				initialProgram={programForChat}
+			/>
+
+			{/* Name Collection Modal */}
+			<NameCollectionModal
+				isOpen={showNameModal}
+				onClose={() => setShowNameModal(false)}
+				onNameSubmit={handleNameSubmit}
 			/>
 		</div>
 	);

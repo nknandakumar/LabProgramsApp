@@ -84,7 +84,7 @@ const Home = () => {
 
 				{/** Subjects Section */}
 				<div className="flex flex-col pt-20 items-center">
-					<h2 className="font-sans text-[36px] sm:text-[42px] md:text-[52px] leading-[42px] sm:leading-[50px] md:leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text mb-6 sm:mb-8 md:mb-10">
+					<h2 className=" font-sans text-[36px] sm:text-[42px] md:text-[52px] leading-[42px] sm:leading-[50px] md:leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text mb-6 sm:mb-8 md:mb-10">
 						Subjects Covered
 					</h2>
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-16 sm:gap-20 my-6 sm:my-8 md:my-10 w-full">

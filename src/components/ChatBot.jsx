@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getAllPrograms } from "../data/programs.js";
 import FormatMessage from "./formatMessage.jsx";
-const STORAGE_KEY = "chat_history";
+import { getPersonalizedMessage } from "../utils/userUtils";
+import { getRandomLoadingMessage } from "../utils/loadingMessages";
+
+const STORAGE_KEY = "chat_messages";
 const MAX_MESSAGES = 50; // Limit number of stored messages
-const TYPING_SPEED = 5; // milliseconds per character (reduced from 30ms to 5ms)
+const TYPING_SPEED = 30; // milliseconds per character (reduced from 30ms to 30ms)
 
 const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 	const [messages, setMessages] = useState(() => {
@@ -14,19 +17,28 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 			: [
 					{
 						type: "bot",
-						content:
-							"Hello! I'm your AI assistant. Select a program category and specific program to discuss, or ask me anything about programming.",
+						content: getPersonalizedMessage(
+							"Hi [Name]! I'm your AI assistant. Select a program category and specific program to discuss, or ask me anything about programming.",
+							"Hello! I'm your AI assistant. Select a program category and specific program to discuss, or ask me anything about programming."
+						),
 						timestamp: "Just now",
 					},
-			  ];
+				];
 	});
 	const [inputMessage, setInputMessage] = useState("");
 	const [selectedSubject, setSelectedSubject] = useState(null);
 	const [showPrograms, setShowPrograms] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [typingMessage, setTypingMessage] = useState("");
+	const [loadingMessage, setLoadingMessage] = useState(
+		getRandomLoadingMessage()
+	);
 	const chatEndRef = useRef(null);
 	const typingTimeoutRef = useRef(null);
+	const typingIndexRef = useRef(0);
+	const currentMessageRef = useRef("");
+	const lastLoadingIndexRef = useRef(-1);
+	const lastErrorIndexRef = useRef(-1);
 
 	// Auto scroll to bottom when messages change
 	useEffect(() => {
@@ -51,23 +63,38 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 		}
 	}, [initialProgram, isOpen]);
 
-	const scrollToBottom = () => {
-		chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	// Update loading message every 3 seconds when loading
+	useEffect(() => {
+		let interval;
+		if (loading) {
+			interval = setInterval(() => {
+				setLoadingMessage(getRandomLoadingMessage());
+			}, 3000);
+		}
+		return () => clearInterval(interval);
+	}, [loading]);
+
+	const typeMessage = (message) => {
+		currentMessageRef.current = message;
+		typingIndexRef.current = 0;
+		setTypingMessage("");
+		startTyping();
 	};
 
-	const typeMessage = (message, index = 0) => {
-		if (index < message.length) {
-			setTypingMessage(message.substring(0, index + 1));
-			typingTimeoutRef.current = setTimeout(() => {
-				typeMessage(message, index + 1);
-			}, TYPING_SPEED);
+	const startTyping = () => {
+		if (typingIndexRef.current < currentMessageRef.current.length) {
+			setTypingMessage(
+				currentMessageRef.current.substring(0, typingIndexRef.current + 1)
+			);
+			typingIndexRef.current++;
+			typingTimeoutRef.current = setTimeout(startTyping, TYPING_SPEED);
 		} else {
 			setTypingMessage("");
 			setMessages((prevMessages) => [
 				...prevMessages,
 				{
 					type: "bot",
-					content: message,
+					content: currentMessageRef.current,
 					timestamp: new Date().toLocaleTimeString([], {
 						hour: "numeric",
 						minute: "2-digit",
@@ -100,8 +127,10 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 		setMessages([
 			{
 				type: "bot",
-				content:
-					"Hello! I'm your AI assistant. Select a program category and specific program to discuss, or ask me anything about programming.",
+				content: getPersonalizedMessage(
+					"Hi [Name]! I'm your AI assistant. Select a program category and specific program to discuss, or ask me anything about programming.",
+					"Hello! I'm your AI assistant. Select a program category and specific program to discuss, or ask me anything about programming."
+				),
 				timestamp: "Just now",
 			},
 		]);
@@ -111,42 +140,101 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 		e.preventDefault();
 		if (!inputMessage.trim()) return;
 
-		// Add user message to chat
-		const userMessage = {
-			type: "user",
-			content: inputMessage,
-			timestamp: new Date().toLocaleTimeString([], {
-				hour: "numeric",
-				minute: "2-digit",
-				hour12: true,
-			}),
-		};
-
-		setMessages((prevMessages) => [...prevMessages, userMessage]);
+		const userMessage = inputMessage.trim();
 		setInputMessage("");
-		setIsLoading(true);
-		scrollToBottom();
+		setMessages((prevMessages) => [
+			...prevMessages,
+			{
+				type: "user",
+				content: userMessage,
+				timestamp: new Date().toLocaleTimeString([], {
+					hour: "numeric",
+					minute: "2-digit",
+					hour12: true,
+				}),
+			},
+		]);
+
+		setLoading(true);
 
 		try {
-			// Send message to backend API
+			// Send only the code to the backend
+			const requestBody = {
+				code: userMessage,
+			};
+
+			console.log("Sending request to server:", requestBody);
+
 			const response = await fetch("http://localhost:3001/api/explain", {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ code: inputMessage }),
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+				},
+				body: JSON.stringify(requestBody),
 			});
 
-			const data = await response.json();
-			console.log(data);
+			console.log("Response status:", response.status);
+			console.log(
+				"Response headers:",
+				Object.fromEntries([...response.headers])
+			);
 
-			// Start typing animation for the response
-			typeMessage(data.explanation || "No explanation returned.");
-		} catch (err) {
-			console.error("Error fetching explanation:", err);
-			typeMessage("Error fetching explanation. Please try again.");
+			if (!response.ok) {
+				let errorMessage = "Failed to get response from server";
+				try {
+					const errorData = await response.json();
+					console.log("Error data:", errorData);
+					errorMessage = errorData.message || errorMessage;
+				} catch {
+					// If parsing JSON fails, try to get the text content
+					const textError = await response.text();
+					console.log("Error text:", textError);
+					errorMessage = textError || errorMessage;
+				}
+				throw new Error(errorMessage);
+			}
+
+			const data = await response.json();
+			console.log("Received response from server:", data);
+
+			// Ensure we're passing a string to typeMessage
+			let messageContent = "";
+			if (typeof data === "string") {
+				messageContent = data;
+			} else if (data.message) {
+				messageContent = data.message;
+			} else if (data.response) {
+				messageContent = data.response;
+			} else if (data.explanation) {
+				messageContent = data.explanation;
+			} else {
+				// If we can't find a string property, convert the object to a string
+				messageContent = JSON.stringify(data);
+			}
+
+			typeMessage(messageContent);
+		} catch (error) {
+			console.error("Error in chat:", error);
+			typeMessage(
+				getPersonalizedMessage(
+					"Sorry, I'm having trouble connecting to the server. Please try again later.",
+					"Sorry, I'm having trouble connecting to the server. Please try again later."
+				)
+			);
 		} finally {
-			setIsLoading(false);
+			setLoading(false);
 		}
 	};
+
+	// Cleanup typing timeout on unmount
+	useEffect(() => {
+		return () => {
+			if (typingTimeoutRef.current) {
+				clearTimeout(typingTimeoutRef.current);
+			}
+		};
+	}, []);
 
 	if (!isOpen) return null;
 
@@ -254,14 +342,10 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 						</div>
 					</div>
 				)}
-				{isLoading && !typingMessage && (
+				{loading && !typingMessage && (
 					<div className="flex justify-start">
 						<div className="max-w-[80%] rounded-2xl px-4 py-3 bg-[#2A2A2A] text-white rounded-bl-none shadow-lg">
-							<div className="flex items-center gap-2">
-								<div className="w-4 h-4 rounded-full bg-purple-500 animate-pulse"></div>
-								<div className="w-4 h-4 rounded-full bg-purple-500 animate-pulse delay-100"></div>
-								<div className="w-4 h-4 rounded-full bg-purple-500 animate-pulse delay-200"></div>
-							</div>
+							<p className="text-sm">{loadingMessage}</p>
 						</div>
 					</div>
 				)}
@@ -352,9 +436,12 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 					<textarea
 						value={inputMessage}
 						onChange={(e) => setInputMessage(e.target.value)}
-						placeholder="Message AI Assistant..."
+						placeholder={getPersonalizedMessage(
+							"Ask me anything, [Name]...",
+							"Ask me anything..."
+						)}
 						className="w-full bg-[#2A2A2A] text-white px-4 py-2 rounded-xl border-0 outline-0 min-h-[100px] max-h-[150px] resize-y shadow-inner"
-						disabled={isLoading}
+						disabled={loading}
 					/>
 					<div className="flex items-center gap-4 w-full">
 						<div className="flex gap-2 flex-1  justify-start">
@@ -382,9 +469,9 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 						<button
 							type="submit"
 							className="p-2 h-10 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 transition-colors shadow-lg"
-							disabled={isLoading}
+							disabled={loading}
 						>
-							{isLoading ? (
+							{loading ? (
 								<svg
 									className="animate-spin h-5 w-5 text-white"
 									xmlns="http://www.w3.org/2000/svg"

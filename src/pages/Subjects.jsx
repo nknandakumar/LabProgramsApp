@@ -28,7 +28,7 @@ const Subjects = () => {
 						Back
 					</button>
 				</Link>
-				<h2 className="md:text-center font-sans text-3xl sm:text-4xl font-bold">
+				<h2 className="font-sans text-[24px] sm:text-[32px] md:text-[36px] leading-[34px] sm:leading-[38px] md:leading-[42px] font-[800]">
 					Subjects
 				</h2>
 				<p className=" font-mono text-base sm:text-lg font-normal max-w-2xl">

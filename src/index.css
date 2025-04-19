@@ -80,7 +80,8 @@ pre[class*="language-"] {
 	@apply bg-[#1E1E1E] rounded-lg p-2 sm:p-4 overflow-x-auto;
 	margin: 0;
 	border-radius: 0.5rem;
-	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+	box-shadow:
+		0 4px 6px -1px rgba(0, 0, 0, 0.1),
 		0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
@@ -145,12 +146,13 @@ code[class*="language-"] {
 	background-size: 300% 300%;
 }
 
+/* Global h2 styles */
 h2 {
-	@apply font-sans font-[600] text-[32px] sm:text-[42px] md:text-[52px] leading-[38px] sm:leading-[48px] md:leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text;
+	@apply font-sans font-semibold text-2xl sm:text-3xl md:text-4xl leading-tight bg-gradient-to-b from-white to-neutral-500 bg-clip-text text-transparent;
 }
 
 p {
-	@apply font-mono font-[400] leading-[20px] sm:leading-[24px] md:leading-[27px] text-[16px] sm:text-[18px] md:text-[22px];
+	@apply font-mono text-base sm:text-lg md:text-xl leading-relaxed;
 }
 
 .program-details-btn {
