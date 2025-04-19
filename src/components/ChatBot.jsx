@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getAllPrograms } from "../data/programs.js";
-
+import FormatMessage from "./formatMessage.jsx";
 const STORAGE_KEY = "chat_history";
 const MAX_MESSAGES = 50; // Limit number of stored messages
-const TYPING_SPEED = 30; // milliseconds per character
+const TYPING_SPEED = 5; // milliseconds per character (reduced from 30ms to 5ms)
 
 const ChatBot = ({ isOpen, onClose }) => {
 	const [messages, setMessages] = useState(() => {
@@ -54,11 +54,18 @@ const ChatBot = ({ isOpen, onClose }) => {
 			}, TYPING_SPEED);
 		} else {
 			setTypingMessage("");
-			setMessages(prevMessages => [...prevMessages, {
-				type: "bot",
-				content: message,
-				timestamp: new Date().toLocaleTimeString(),
-			}]);
+			setMessages((prevMessages) => [
+				...prevMessages,
+				{
+					type: "bot",
+					content: message,
+					timestamp: new Date().toLocaleTimeString([], {
+						hour: "numeric",
+						minute: "2-digit",
+						hour12: true,
+					}),
+				},
+			]);
 		}
 	};
 
@@ -91,43 +98,6 @@ const ChatBot = ({ isOpen, onClose }) => {
 		]);
 	};
 
-	const formatMessage = (content) => {
-		// Split content into lines
-		const lines = content.split("\n");
-		return lines.map((line, index) => {
-			// Check if line starts with specific keywords
-			if (line.startsWith("Program:")) {
-				return (
-					<div key={index} className="font-semibold text-purple-400">
-						{line}
-					</div>
-				);
-			} else if (line.startsWith("Focus:")) {
-				return (
-					<div key={index} className="text-gray-300">
-						{line}
-					</div>
-				);
-			} else if (line.startsWith("Code:")) {
-				return (
-					<div key={index} className="font-semibold text-purple-400 mt-2">
-						{line}
-					</div>
-				);
-			} else if (line.trim() === "") {
-				return <div key={index} className="h-2"></div>;
-			} else {
-				return (
-					<div key={index} className="font-mono text-sm">
-						{line}
-					</div>
-				);
-			}
-		});
-	};
-
-	
-
 	const handleSendMessage = async (e) => {
 		e.preventDefault();
 		if (!inputMessage.trim()) return;
@@ -136,7 +106,11 @@ const ChatBot = ({ isOpen, onClose }) => {
 		const userMessage = {
 			type: "user",
 			content: inputMessage,
-			timestamp: new Date().toLocaleTimeString(),
+			timestamp: new Date().toLocaleTimeString([], {
+				hour: "numeric",
+				minute: "2-digit",
+				hour12: true,
+			}),
 		};
 
 		setMessages((prevMessages) => [...prevMessages, userMessage]);
@@ -237,7 +211,7 @@ const ChatBot = ({ isOpen, onClose }) => {
 							}`}
 						>
 							<div className="whitespace-pre-wrap font-sans">
-								{formatMessage(message.content)}
+								<FormatMessage content={message.content} />
 							</div>
 							<div className="text-xs text-gray-400 mt-2 flex items-center gap-1">
 								<svg
@@ -261,7 +235,7 @@ const ChatBot = ({ isOpen, onClose }) => {
 					<div className="flex justify-start">
 						<div className="max-w-[80%] rounded-2xl px-4 py-3 bg-[#2A2A2A] text-white rounded-bl-none shadow-lg">
 							<div className="whitespace-pre-wrap font-sans">
-								{formatMessage(typingMessage)}
+								<FormatMessage content={typingMessage} />
 							</div>
 							<div className="flex items-center gap-2 mt-2">
 								<div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
