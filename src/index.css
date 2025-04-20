@@ -148,7 +148,11 @@ code[class*="language-"] {
 
 /* Global h2 styles */
 h2 {
-	@apply font-sans font-semibold text-2xl sm:text-3xl md:text-4xl leading-tight bg-gradient-to-b from-white to-neutral-500 bg-clip-text text-transparent;
+	@apply font-sans font-semibold text-3xl sm:text-3xl md:text-4xl leading-tight bg-gradient-to-b from-white to-neutral-500 bg-clip-text text-transparent;
+}
+
+h4 {
+	@apply font-sans font-semibold  leading-tight bg-gradient-to-b from-white to-neutral-500 bg-clip-text text-transparent;
 }
 
 p {
@@ -239,3 +243,5 @@ p {
 		@apply m-6;
 	}
 }
+
+

@@ -37,8 +37,6 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 	const typingTimeoutRef = useRef(null);
 	const typingIndexRef = useRef(0);
 	const currentMessageRef = useRef("");
-	const lastLoadingIndexRef = useRef(-1);
-	const lastErrorIndexRef = useRef(-1);
 
 	// Auto scroll to bottom when messages change
 	useEffect(() => {
@@ -57,7 +55,7 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 	// Handle initialProgram prop
 	useEffect(() => {
 		if (initialProgram && isOpen) {
-			const programMessage = `Please explain this program: ${initialProgram.program_name}\n\nCode:\n${initialProgram.code}`;
+			const programMessage = `Please explain this program: ${initialProgram.title}\n\nCode:\n${initialProgram.code}`;
 			setInputMessage(programMessage);
 			handleSendMessage({ preventDefault: () => {} });
 		}
@@ -111,7 +109,7 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 	};
 
 	const handleProgramSelect = (program) => {
-		const fullMessage = `Program: ${program.program_name}\nFocus: ${program.focused_on}\n\nCode:\n${program.code}`;
+		const fullMessage = `Program: ${program.title}\nFocus: ${Array.isArray(program.focused_on) ? program.focused_on.join(", ") : program.focused_on}\n\nCode:\n${program.code}`;
 		setInputMessage(fullMessage);
 		setShowPrograms(false);
 		setSelectedSubject(null);
@@ -241,24 +239,26 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 	const programsList = selectedSubject ? getAllPrograms(selectedSubject) : [];
 
 	return (
-		<div className="fixed inset-0 bg-[#1E1E1E] z-50 flex flex-col w-full h-full shadow-[inset_0_0_50px_rgba(0,0,0,0.5)]">
+		<div className="fixed  inset-0 bg-[#0C0C0C] z-50 flex flex-col w-full h-full shadow-[inset_0_-4px_10px_rgba(255,255,255,0.3)]">
 			{/* Header */}
-			<div className="flex items-center justify-between p-4 border-b border-gray-800 bg-[#1A1A1A] shadow-lg">
+			<div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-800 bg-[#1C1C1C] shadow-lg">
 				<div className="flex items-center gap-2">
-					<div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+					<div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#616C08] to-[#8A3251] flex items-center justify-center shadow-lg">
 						<span className="text-white font-semibold">AI</span>
 					</div>
-					<h2 className="text-white text-lg font-medium">AI Assistant</h2>
+					<h2 className="text-white text-base sm:text-lg font-medium">
+						AI Assistant
+					</h2>
 				</div>
 				<div className="flex items-center gap-2">
 					<button
 						onClick={clearChatHistory}
-						className="text-gray-400 hover:text-gray-200 p-2 rounded-full hover:bg-[#2A2A2A] transition-colors"
+						className="text-gray-400 hover:text-gray-200 p-1.5 sm:p-2 rounded-full hover:bg-[#2A2A2A] transition-colors"
 						title="Clear chat history"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
-							className="h-5 w-5"
+							className="h-4 w-4 sm:h-5 sm:w-5"
 							viewBox="0 0 20 20"
 							fill="currentColor"
 						>
@@ -271,11 +271,11 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 					</button>
 					<button
 						onClick={onClose}
-						className="text-gray-400 hover:text-gray-200"
+						className="text-gray-400 hover:text-gray-200 p-1.5 sm:p-2"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
-							className="h-6 w-6"
+							className="h-5 w-5 sm:h-6 sm:w-6"
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
@@ -292,7 +292,7 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 			</div>
 
 			{/* Chat Area */}
-			<div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-none">
+			<div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 scrollbar-none">
 				{messages.map((message, index) => (
 					<div
 						key={index}
@@ -301,19 +301,19 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 						}`}
 					>
 						<div
-							className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+							className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-3 sm:px-4 py-2 sm:py-3 ${
 								message.type === "user"
-									? "bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-br-none shadow-lg"
-									: "bg-[#2A2A2A] text-white rounded-bl-none shadow-lg"
+									? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white rounded-br-none shadow-lg"
+									: "bg-[#1C1C1C] text-white rounded-bl-none shadow-lg"
 							}`}
 						>
-							<div className="whitespace-pre-wrap font-sans">
+							<div className="whitespace-pre-wrap font-sans text-sm sm:text-base break-words">
 								<FormatMessage content={message.content} />
 							</div>
-							<div className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+							<div className="text-[10px] sm:text-xs text-gray-400 mt-1 sm:mt-2 flex items-center gap-1">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
-									className="h-3 w-3"
+									className="h-2.5 w-2.5 sm:h-3 sm:w-3"
 									viewBox="0 0 20 20"
 									fill="currentColor"
 								>
@@ -330,22 +330,22 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 				))}
 				{typingMessage && (
 					<div className="flex justify-start">
-						<div className="max-w-[80%] rounded-2xl px-4 py-3 bg-[#2A2A2A] text-white rounded-bl-none shadow-lg">
-							<div className="whitespace-pre-wrap font-sans">
+						<div className="max-w-[85%] sm:max-w-[75%] rounded-2xl px-3 sm:px-4 py-2 sm:py-3 bg-[#1C1C1C] text-white rounded-bl-none shadow-lg">
+							<div className="whitespace-pre-wrap font-sans text-sm sm:text-base break-words">
 								<FormatMessage content={typingMessage} />
 							</div>
 							<div className="flex items-center gap-2 mt-2">
-								<div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
-								<div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse delay-100"></div>
-								<div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse delay-200"></div>
+								<div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#616C08] animate-pulse"></div>
+								<div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#8A3251] animate-pulse delay-100"></div>
+								<div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#616C08] animate-pulse delay-200"></div>
 							</div>
 						</div>
 					</div>
 				)}
 				{loading && !typingMessage && (
 					<div className="flex justify-start">
-						<div className="max-w-[80%] rounded-2xl px-4 py-3 bg-[#2A2A2A] text-white rounded-bl-none shadow-lg">
-							<p className="text-sm">{loadingMessage}</p>
+						<div className="max-w-[85%] sm:max-w-[75%] rounded-2xl px-3 sm:px-4 py-2 sm:py-3 bg-[#1C1C1C] text-white rounded-bl-none shadow-lg">
+							<p className="text-xs sm:text-sm">{loadingMessage}</p>
 						</div>
 					</div>
 				)}
@@ -354,19 +354,19 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 
 			{/* Program Selection */}
 			{showPrograms && (
-				<div className="absolute bottom-[80px] left-0 right-0 bg-[#2A2A2A] border-t border-gray-800 max-h-[40vh] overflow-y-auto shadow-lg">
-					<div className="p-4">
+				<div className="absolute bottom-[80px] left-0 right-0 bg-[#1C1C1C] border-t border-gray-800 max-h-[40vh] overflow-y-auto shadow-lg">
+					<div className="p-3 sm:p-4">
 						<div className="flex justify-between items-center mb-3">
-							<h3 className="text-white text-lg font-medium">
+							<h3 className="text-white text-base sm:text-lg font-medium">
 								{selectedSubject === "cma" ? "CMA Programs" : "Python Programs"}
 							</h3>
 							<button
 								onClick={handleCancel}
-								className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-[#3A3A3A] transition-colors"
+								className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-[#2A2A2A] transition-colors"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
-									className="h-5 w-5"
+									className="h-4 w-4 sm:h-5 sm:w-5"
 									viewBox="0 0 20 20"
 									fill="currentColor"
 								>
@@ -384,12 +384,16 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 									<button
 										key={program.id}
 										onClick={() => handleProgramSelect(program)}
-										className="w-full text-left p-3 hover:bg-[#3A3A3A] text-white rounded-lg transition-colors"
+										className="w-full text-left p-2 sm:p-3 hover:bg-[#2A2A2A] text-white rounded-lg transition-colors"
 									>
-										<div className="font-medium">{program.program_name}</div>
+										<div className="font-medium text-sm sm:text-base">
+											{program.program_name}
+										</div>
 										{program.focused_on && (
-											<div className="text-sm text-gray-400">
-												{program.focused_on}
+											<div className="text-xs sm:text-sm text-gray-400">
+												{Array.isArray(program.focused_on)
+													? program.focused_on.join(", ")
+													: program.focused_on}
 											</div>
 										)}
 									</button>
@@ -399,7 +403,7 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 							<div className="text-center py-3 text-gray-400">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
-									className="h-12 w-12 mx-auto mb-3 text-gray-500"
+									className="h-8 w-8 sm:h-12 sm:w-12 mx-auto mb-3 text-gray-500"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -411,13 +415,15 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 										d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
 									/>
 								</svg>
-								<p className="text-lg font-medium">No Programs Available</p>
-								<p className="text-sm mb-4">
+								<p className="text-base sm:text-lg font-medium">
+									No Programs Available
+								</p>
+								<p className="text-xs sm:text-sm mb-4">
 									There are currently no programs for this category.
 								</p>
 								<button
 									onClick={handleCancel}
-									className="px-4 py-2 bg-[#3A3A3A] text-white rounded-lg hover:bg-[#4A4A4A] transition-colors"
+									className="px-3 py-1.5 sm:px-4 sm:py-2 bg-[#2A2A2A] text-white rounded-lg hover:bg-[#3A3A3A] transition-colors"
 								>
 									Go Back
 								</button>
@@ -428,10 +434,10 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 			)}
 
 			{/* Input Area */}
-			<div className="border-t border-gray-800 p-4  shadow-lg">
+			<div className="border-t border-gray-800 p-3 sm:p-4 shadow-lg">
 				<form
 					onSubmit={handleSendMessage}
-					className="mt-3 flex flex-col items-center gap-4 max-w-2xl mx-auto"
+					className="flex flex-col items-center gap-3 sm:gap-4 max-w-2xl mx-auto"
 				>
 					<textarea
 						value={inputMessage}
@@ -440,27 +446,29 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 							"Ask me anything, [Name]...",
 							"Ask me anything..."
 						)}
-						className="w-full bg-[#2A2A2A] text-white px-4 py-2 rounded-xl border-0 outline-0 min-h-[100px] max-h-[150px] resize-y shadow-inner"
+						className="w-full bg-[#1C1C1C] text-white px-3 sm:px-4 py-2 rounded-xl border-0 outline-0 min-h-[80px] sm:min-h-[100px] max-h-[120px] sm:max-h-[150px] resize-y shadow-inner text-sm sm:text-base"
 						disabled={loading}
 					/>
-					<div className="flex items-center gap-4 w-full">
-						<div className="flex gap-2 flex-1  justify-start">
+					<div className="flex items-center gap-3 sm:gap-4 w-full">
+						<div className="flex gap-2 flex-1 justify-start">
 							<button
+								type="button"
 								onClick={() => handleSubjectClick("cma")}
-								className={`px-3 py-1.5 rounded-xl cursor-pointer text-sm transition-all ${
+								className={`px-3 py-1.5 rounded-xl cursor-pointer text-xs sm:text-sm transition-all ${
 									selectedSubject === "cma"
-										? "bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg"
-										: "bg-[#2A2A2A] text-gray-300 hover:bg-[#3A3A3A] shadow-md"
+										? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white shadow-lg"
+										: "bg-[#1C1C1C] text-gray-300 hover:bg-[#2A2A2A] shadow-md"
 								}`}
 							>
 								CMA
 							</button>
 							<button
+								type="button"
 								onClick={() => handleSubjectClick("python")}
-								className={`px-3 py-1.5 rounded-xl cursor-pointer text-sm transition-all ${
+								className={`px-3 py-1.5 rounded-xl cursor-pointer text-xs sm:text-sm transition-all ${
 									selectedSubject === "python"
-										? "bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg"
-										: "bg-[#2A2A2A] text-gray-300 hover:bg-[#3A3A3A] shadow-md"
+										? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white shadow-lg"
+										: "bg-[#1C1C1C] text-gray-300 hover:bg-[#2A2A2A] shadow-md"
 								}`}
 							>
 								Python
@@ -468,12 +476,12 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 						</div>
 						<button
 							type="submit"
-							className="p-2 h-10 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 transition-colors shadow-lg"
+							className="p-2 h-9 sm:h-10 rounded-full bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white hover:from-[#8A3251] hover:to-[#616C08] transition-all shadow-lg disabled:opacity-50"
 							disabled={loading}
 						>
 							{loading ? (
 								<svg
-									className="animate-spin h-5 w-5 text-white"
+									className="animate-spin h-4 w-4 sm:h-5 sm:w-5 text-white"
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
@@ -497,7 +505,7 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 24 24"
 									fill="currentColor"
-									className="w-5 h-5"
+									className="w-4 h-4 sm:w-5 sm:h-5"
 								>
 									<path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
 								</svg>

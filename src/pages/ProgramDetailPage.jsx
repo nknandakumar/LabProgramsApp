@@ -39,17 +39,25 @@ const ProgramDetailPage = () => {
 
 	useEffect(() => {
 		if (window.Prism) {
-			window.Prism.highlightAll();
+			// Add a small delay to ensure the DOM is updated before highlighting
+			setTimeout(() => {
+				window.Prism.highlightAll();
+			}, 100);
 		}
-	}, [activeTab, activeCodeTab]);
+	}, [activeTab, activeCodeTab, editedCode]);
 
 	useEffect(() => {
 		if (program) {
-			// Initialize edited code with program code
+			// Extract HTML, CSS, and JS from the program code
+			const htmlContent = program.code || "";
+			const cssContent = program.external_css || "";
+			const jsContent = program.external_js || "";
+
+			// Set the edited code state
 			setEditedCode({
-				html: program.code || "",
-				css: program.external_css || "",
-				js: program.external_js || "",
+				html: htmlContent,
+				css: cssContent,
+				js: jsContent,
 			});
 		}
 	}, [program]);
@@ -110,23 +118,6 @@ const ProgramDetailPage = () => {
 
 	const { program_name, focused_on } = program;
 
-	const formatCode = (code) => {
-		// Basic indentation for HTML
-		let formattedCode = code
-			.replace(/</g, "\n<")
-			.replace(/>/g, ">\n")
-			.replace(/\n\s*\n/g, "\n")
-			.split("\n")
-			.map((line) => {
-				if (line.trim().startsWith("</")) {
-					return "  " + line;
-				}
-				return line;
-			})
-			.join("\n");
-		return formattedCode;
-	};
-
 	// Create a combined HTML document with CSS and JS for preview
 	const combinedHtml = `
 		<!DOCTYPE html>
@@ -161,11 +152,11 @@ const ProgramDetailPage = () => {
 			);
 		} else {
 			return (
-				<pre className="line-numbers language-html text-xs sm:text-sm">
-					<code className={`language-${language}`}>
-						{activeCodeTab === "html" ? formatCode(codeContent) : codeContent}
-					</code>
-				</pre>
+				<div className="overflow-auto">
+					<pre className="line-numbers language-html text-xs sm:text-sm">
+						<code className={`language-${language}`}>{codeContent}</code>
+					</pre>
+				</div>
 			);
 		}
 	};
@@ -181,7 +172,7 @@ const ProgramDetailPage = () => {
 									onClick={() => handleCodeTabChange("html")}
 									className={`px-3 py-1.5 rounded text-sm ${
 										activeCodeTab === "html"
-											? "bg-purple-600 text-white"
+											? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white"
 											: "bg-[#1C1C1C] text-gray-300 hover:text-white"
 									}`}
 								>
@@ -191,7 +182,7 @@ const ProgramDetailPage = () => {
 									onClick={() => handleCodeTabChange("css")}
 									className={`px-3 py-1.5 rounded text-sm ${
 										activeCodeTab === "css"
-											? "bg-purple-600 text-white"
+											? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white"
 											: "bg-[#1C1C1C] text-gray-300 hover:text-white"
 									}`}
 								>
@@ -201,7 +192,7 @@ const ProgramDetailPage = () => {
 									onClick={() => handleCodeTabChange("js")}
 									className={`px-3 py-1.5 rounded text-sm ${
 										activeCodeTab === "js"
-											? "bg-purple-600 text-white"
+											? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white"
 											: "bg-[#1C1C1C] text-gray-300 hover:text-white"
 									}`}
 								>
@@ -309,16 +300,22 @@ const ProgramDetailPage = () => {
 						Back
 					</button>
 				</Link>
-				<div className="space-y-1 sm:space-y-2">
+				<div className="space-y-4 sm:space-y-2">
 					<p className="font-mono text-gray-400 text-sm sm:text-base">
 						Program {id}
 					</p>
-					<h2 className="text-lg font-sans sm:text-xl md:text-3xl font-bold">
+					<h4 className="text-sm  font-sans sm:text-xl md:text-3xl font-bold">
 						{program_name}
-					</h2>
-					<p className="text-gray-500 font-mono text-sm sm:text-base">
-						{focused_on}
-					</p>
+					</h4>
+					
+	               <div className="flex md:my-6 gap-2 flex-wrap">
+				   {focused_on.map((name,index)=>(
+							<span key={index} className="text-black bg-gray-300 block px-2 py-1 rounded-md font-mono text-[10px] sm:text-base">
+								{name}
+							</span>
+						)) }
+				   </div>
+				
 				</div>
 
 				<div className="w-full border border-gray-800 rounded-lg overflow-hidden">

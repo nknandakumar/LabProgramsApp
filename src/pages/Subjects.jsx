@@ -24,7 +24,7 @@ const Subjects = () => {
 		<div className="w-full overflow-x-hidden">
 			<div className="px-4 sm:px-6 md:px-8 lg:px-12 min-h-screen flex flex-col gap-6 sm:gap-8 md:gap-10 items-start justify-center">
 				<Link to="/">
-					<button className="bg-white font-mono text-black font-bold text-start py-2 px-4 rounded">
+					<button className="bg-white cursor-pointer font-mono text-black font-bold text-start py-2 px-4 rounded">
 						Back
 					</button>
 				</Link>
