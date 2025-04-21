@@ -162,64 +162,104 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 			};
 
 			console.log("Sending request to server:", requestBody);
+			console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
 
-			const response = await fetch("http://localhost:3001/api/explain", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Accept: "application/json",
-				},
-				body: JSON.stringify(requestBody),
-			});
+			// Check if the backend URL is defined
+			if (!import.meta.env.VITE_BACKEND_URL) {
+				throw new Error(
+					"Backend URL is not defined. Please check your environment variables."
+				);
+			}
 
-			console.log("Response status:", response.status);
-			console.log(
-				"Response headers:",
-				Object.fromEntries([...response.headers])
-			);
+			// Try to connect to the backend server
+			try {
+				const response = await fetch(
+					`${import.meta.env.VITE_BACKEND_URL}/api/explain`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							Accept: "application/json",
+						},
+						body: JSON.stringify(requestBody),
+					}
+				);
 
-			if (!response.ok) {
-				let errorMessage = "Failed to get response from server";
-				try {
-					const errorData = await response.json();
-					console.log("Error data:", errorData);
-					errorMessage = errorData.message || errorMessage;
-				} catch {
-					// If parsing JSON fails, try to get the text content
-					const textError = await response.text();
-					console.log("Error text:", textError);
-					errorMessage = textError || errorMessage;
+				console.log("Response status:", response.status);
+				console.log(
+					"Response headers:",
+					Object.fromEntries([...response.headers])
+				);
+
+				if (!response.ok) {
+					let errorMessage = "Failed to get response from server";
+					try {
+						const errorData = await response.json();
+						console.log("Error data:", errorData);
+						errorMessage = errorData.message || errorMessage;
+					} catch {
+						// If parsing JSON fails, try to get the text content
+						const textError = await response.text();
+						console.log("Error text:", textError);
+						errorMessage = textError || errorMessage;
+					}
+					throw new Error(errorMessage);
 				}
-				throw new Error(errorMessage);
+
+				const data = await response.json();
+				console.log("Received response from server:", data);
+
+				// Ensure we're passing a string to typeMessage
+				let messageContent = "";
+				if (typeof data === "string") {
+					messageContent = data;
+				} else if (data.message) {
+					messageContent = data.message;
+				} else if (data.response) {
+					messageContent = data.response;
+				} else if (data.explanation) {
+					messageContent = data.explanation;
+				} else {
+					// If we can't find a string property, convert the object to a string
+					messageContent = JSON.stringify(data);
+				}
+
+				typeMessage(messageContent);
+			} catch (fetchError) {
+				console.error("Error fetching from backend:", fetchError);
+
+				// If the fetch fails, try to use a fallback response
+				if (
+					fetchError.message.includes("Failed to fetch") ||
+					fetchError.message.includes("NetworkError")
+				) {
+					// Provide a fallback response when the backend is not accessible
+					const fallbackResponse =
+						"I'm sorry, but I'm having trouble connecting to the server right now. This could be due to network issues or the server being down. Please try again later or contact support if the problem persists.";
+					typeMessage(fallbackResponse);
+				} else {
+					throw fetchError; // Re-throw other errors
+				}
 			}
-
-			const data = await response.json();
-			console.log("Received response from server:", data);
-
-			// Ensure we're passing a string to typeMessage
-			let messageContent = "";
-			if (typeof data === "string") {
-				messageContent = data;
-			} else if (data.message) {
-				messageContent = data.message;
-			} else if (data.response) {
-				messageContent = data.response;
-			} else if (data.explanation) {
-				messageContent = data.explanation;
-			} else {
-				// If we can't find a string property, convert the object to a string
-				messageContent = JSON.stringify(data);
-			}
-
-			typeMessage(messageContent);
 		} catch (error) {
 			console.error("Error in chat:", error);
-			typeMessage(
-				getPersonalizedMessage(
-					"Sorry, I'm having trouble connecting to the server. Please try again later.",
-					"Sorry, I'm having trouble connecting to the server. Please try again later."
-				)
-			);
+
+			// Provide more specific error messages based on the error type
+			let errorMessage =
+				"Sorry, I'm having trouble connecting to the server. Please try again later.";
+
+			if (
+				error.message.includes("Failed to fetch") ||
+				error.message.includes("NetworkError")
+			) {
+				errorMessage =
+					"Unable to connect to the server. Please check your internet connection or try again later.";
+			} else if (error.message.includes("Backend URL is not defined")) {
+				errorMessage =
+					"Server configuration error. Please contact the administrator.";
+			}
+
+			typeMessage(getPersonalizedMessage(errorMessage, errorMessage));
 		} finally {
 			setLoading(false);
 		}

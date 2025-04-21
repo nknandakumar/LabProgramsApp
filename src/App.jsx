@@ -4,7 +4,6 @@ import Home from "./pages/Home";
 import Subjects from "./pages/Subjects";
 import ProgramListPage from "./pages/ProgramListPage";
 import ProgramDetailPage from "./pages/ProgramDetailPage";
-
 import NotFound from "./pages/NotFound";
 
 const App = () => {
@@ -15,7 +14,6 @@ const App = () => {
 				<Route path="/subjects" element={<Subjects />} />
 				<Route path="/programs/:subject" element={<ProgramListPage />} />
 				<Route path="/programs/:subject/:id" element={<ProgramDetailPage />} />
-			
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</Router>
