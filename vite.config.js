@@ -30,4 +30,10 @@ export default defineConfig({
 			},
 		},
 	},
+	resolve: {
+		alias: {
+			// Add aliases to handle case sensitivity issues
+			"./formatMessage.jsx": "./FormatMessage.jsx",
+		},
+	},
 });
