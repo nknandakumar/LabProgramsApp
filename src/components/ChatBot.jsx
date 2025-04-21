@@ -161,9 +161,7 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 				code: userMessage,
 			};
 
-			console.log("Sending request to server:", requestBody);
-			console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
-
+		
 			// Check if the backend URL is defined
 			if (!import.meta.env.VITE_BACKEND_URL) {
 				throw new Error(
