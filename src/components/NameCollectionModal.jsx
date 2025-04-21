@@ -2,35 +2,30 @@ import React, { useState } from "react";
 
 const NameCollectionModal = ({ isOpen, onClose, onNameSubmit }) => {
 	const [name, setName] = useState("");
-	const [error, setError] = useState("");
 
-	const handleSubmit =  async(e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (!name.trim()) {
-			setError("Please enter your name");
-			return;
-		}
+		if (!name.trim()) return;
+		onClose();   
 		const time = new Date().toLocaleString();
-		onNameSubmit(name.trim());
+		const url = import.meta.env.VITE_URL;
+
 		try {
-		  await fetch(import.meta.env.VITE_URL, {
-			method: 'POST',
-			mode: 'no-cors',  // this avoids CORS errors
-			headers: {
-			  'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ name, time }),
-		  });
-	
+			await fetch(url, {
+				method: "POST",
+				headers: { "Content-Type": "application/x-www-form-urlencoded" },
+				body: new URLSearchParams({
+					Name: name.trim(),
+					Time: time
+				}).toString()
+			});
+			onNameSubmit(name.trim());  // Notify parent.
+		              // Reset the form.
+	               // Close modal.
 		} catch (error) {
-		  console.error('Error:', error);
+			console.error("Error sending data to Google Sheets:", error);
 		}
-
-
 	};
-
-	
-	
 
 	if (!isOpen) return null;
 
@@ -44,7 +39,7 @@ const NameCollectionModal = ({ isOpen, onClose, onNameSubmit }) => {
 					×
 				</button>
 				<h2 className="mt-0 font-sans text-white text-2xl font-bold">Enter your Name</h2>
-                <p className="text-gray-400 text-sm my-4">Just for interactivity</p>
+				<p className="text-gray-400 text-sm my-4">Just for interactivity</p>
 				<form onSubmit={handleSubmit}>
 					<div className="my-6">
 						<input
@@ -56,13 +51,10 @@ const NameCollectionModal = ({ isOpen, onClose, onNameSubmit }) => {
 							required
 							className="w-full p-3 bg-[#2a2a2a] border border-gray-600 rounded text-base text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-blue-500/25"
 						/>
-						{error && (
-							<span className="text-red-500 text-sm mt-2 block">{error}</span>
-						)}
 					</div>
 					<button
 						type="submit"
-						className="w-full p-3  bg-gradient-to-r from-[#616C08] to-[#8A3251] font-sans text-white border-none rounded text-base cursor-pointer transition-colors hover:bg-gradient-to-r hover:to-[#616C08] hover:from-[#8A3251]"
+						className="w-full p-3 bg-gradient-to-r from-[#616C08] to-[#8A3251] font-sans text-white border-none rounded text-base cursor-pointer transition-colors hover:bg-gradient-to-r hover:to-[#616C08] hover:from-[#8A3251]"
 					>
 						Continue
 					</button>
