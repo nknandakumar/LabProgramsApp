@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getAllPrograms } from "../data/programs.js";
-import FormatMessage from "./formatMessage.jsx";
+import FormatMessage from "./formatMessage.js";
 import { getPersonalizedMessage } from "../utils/userUtils";
 import { getRandomLoadingMessage } from "../utils/loadingMessages";
 
@@ -161,7 +161,6 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 				code: userMessage,
 			};
 
-		
 			// Check if the backend URL is defined
 			if (!import.meta.env.VITE_BACKEND_URL) {
 				throw new Error(
