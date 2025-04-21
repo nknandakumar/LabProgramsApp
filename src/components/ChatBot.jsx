@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getAllPrograms } from "../data/programs.js";
-import FormatMessage from "./formatMessage.js";
+import FormatMessage from "./FormatMessage.jsx";
 import { getPersonalizedMessage } from "../utils/userUtils";
 import { getRandomLoadingMessage } from "../utils/loadingMessages";
 
@@ -170,17 +170,14 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 
 			// Try to connect to the backend server
 			try {
-				const response = await fetch(
-					`${import.meta.env.VITE_BACKEND_URL}/api/explain`,
-					{
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-							Accept: "application/json",
-						},
-						body: JSON.stringify(requestBody),
-					}
-				);
+				const response = await fetch(`/api/explain`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Accept: "application/json",
+					},
+					body: JSON.stringify(requestBody),
+				});
 
 				console.log("Response status:", response.status);
 				console.log(
@@ -189,16 +186,23 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 				);
 
 				if (!response.ok) {
+					// Clone the response before reading it
+					const errorResponse = await response.clone();
 					let errorMessage = "Failed to get response from server";
+
 					try {
-						const errorData = await response.json();
+						const errorData = await errorResponse.json();
 						console.log("Error data:", errorData);
 						errorMessage = errorData.message || errorMessage;
 					} catch {
-						// If parsing JSON fails, try to get the text content
-						const textError = await response.text();
-						console.log("Error text:", textError);
-						errorMessage = textError || errorMessage;
+						// If JSON parsing fails, try to get the text content
+						try {
+							const textError = await response.text();
+							console.log("Error text:", textError);
+							errorMessage = textError || errorMessage;
+						} catch (textError) {
+							console.log("Failed to read error response:", textError);
+						}
 					}
 					throw new Error(errorMessage);
 				}
