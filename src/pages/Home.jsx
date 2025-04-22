@@ -38,8 +38,10 @@ const Home = () => {
 					</p>
 
 					<Link to={`/subjects`}>
-					<span className="border border-gray-300 hover:border-white hover:border-2  py-4 px-0.5 rounded-md ">
-							<button className=" animate-border bg-gradient-to-r from-[#000]  via-[#36454F] to-[#0A0A0A] font-mono cursor-pointer text-white px-4 md:px-6 py-3   rounded-md">
+						<span className="flex justify-center">
+							<button
+								className="animate-border border cursor-pointer relative bg-gradient-to-r from-black via-gray-700 to-gray-900 text-white font-mono rounded-md transition-all duration-300  text-sm py-4 px-4 min-w-[140px]  sm:text-base sm:py-3 sm:px-5 sm:min-w-[160px] md:text-lg md:py-4 md:px-6 md:min-w-[180px] hover:shadow-lg hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white"
+							>
 								Click here for Lab Programs
 							</button>
 						</span>
@@ -62,7 +64,6 @@ const Home = () => {
 					<h2 className="font-sans font-[800] text-[36px] sm:text-[42px] md:text-[52px] leading-[42px] sm:leading-[50px] md:leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text">
 						What You Get
 					</h2>
-					
 
 					{/* Bento Grid Layout */}
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-10 sm:my-16 md:my-20">
@@ -124,7 +125,7 @@ const Home = () => {
 						LabSet makes learning programming simple and efficient.
 					</p>
 					<Link to={`/subjects`}>
-					<span className="border border-gray-300 hover:border-white hover:border-2  py-4 px-0.5 rounded-md ">
+						<span className="border border-gray-300 hover:border-white hover:border-2  py-4 px-0.5 rounded-md ">
 							<button className=" animate-border bg-gradient-to-r from-[#000]  via-[#36454F] to-[#0A0A0A] font-mono cursor-pointer text-white px-6 py-3  rounded-md">
 								Click here for Lab Programs
 							</button>
