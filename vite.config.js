@@ -6,7 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
 	plugins: [react(), tailwindcss()],
 	server: {
-		allowedHosts: ["6fad-122-176-173-102.ngrok-free.app"],
+		allowedHosts: ["fd07-122-167-169-216.ngrok-free.app"],
 		proxy: {
 			"/api": {
 				target: "https://labset-backend.onrender.com",
