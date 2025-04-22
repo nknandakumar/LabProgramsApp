@@ -6,7 +6,7 @@ import { getRandomLoadingMessage } from "../utils/loadingMessages";
 
 const STORAGE_KEY = "chat_messages";
 const MAX_MESSAGES = 50; // Limit number of stored messages
-const TYPING_SPEED = 30; // milliseconds per character (reduced from 30ms to 30ms)
+const TYPING_SPEED = 5; // milliseconds per character (reduced from 30ms to 30ms)
 
 const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 	const [messages, setMessages] = useState(() => {
@@ -33,15 +33,49 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 	const [loadingMessage, setLoadingMessage] = useState(
 		getRandomLoadingMessage()
 	);
+	const [showScrollButton, setShowScrollButton] = useState(false);
 	const chatEndRef = useRef(null);
+	const chatContainerRef = useRef(null);
 	const typingTimeoutRef = useRef(null);
 	const typingIndexRef = useRef(0);
 	const currentMessageRef = useRef("");
 
-	// Auto scroll to bottom when messages change
+	// Handle scroll position and auto-scroll
+	const handleScroll = () => {
+		if (chatContainerRef.current) {
+			const { scrollTop, scrollHeight, clientHeight } =
+				chatContainerRef.current;
+			const isAtBottom = scrollHeight - scrollTop <= clientHeight + 100; // 100px threshold
+			setShowScrollButton(!isAtBottom);
+		}
+	};
+
+	// Auto scroll to bottom when messages change, but only if user is at bottom
 	useEffect(() => {
-		chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+		if (chatContainerRef.current) {
+			const { scrollTop, scrollHeight, clientHeight } =
+				chatContainerRef.current;
+			const isAtBottom = scrollHeight - scrollTop <= clientHeight + 100; // 100px threshold
+			if (isAtBottom) {
+				chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+			}
+		}
 	}, [messages, typingMessage]);
+
+	// Add scroll event listener
+	useEffect(() => {
+		const chatContainer = chatContainerRef.current;
+		if (chatContainer) {
+			chatContainer.addEventListener("scroll", handleScroll);
+			return () => chatContainer.removeEventListener("scroll", handleScroll);
+		}
+	}, []);
+
+	// Scroll to bottom function
+	const scrollToBottom = () => {
+		chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+		setShowScrollButton(false);
+	};
 
 	// Save messages to local storage whenever they change
 	useEffect(() => {
@@ -161,9 +195,6 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 				code: userMessage,
 			};
 
-			console.log("Sending request to server:", requestBody);
-			console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
-
 			// Check if the backend URL is defined
 			if (!import.meta.env.VITE_BACKEND_URL) {
 				throw new Error(
@@ -207,7 +238,6 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 				}
 
 				const data = await response.json();
-				console.log("Received response from server:", data);
 
 				// Ensure we're passing a string to typeMessage
 				let messageContent = "";
@@ -332,7 +362,10 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 			</div>
 
 			{/* Chat Area */}
-			<div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 scrollbar-none">
+			<div
+				ref={chatContainerRef}
+				className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 scrollbar-none relative"
+			>
 				{messages.map((message, index) => (
 					<div
 						key={index}
@@ -390,6 +423,28 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 					</div>
 				)}
 				<div ref={chatEndRef} />
+
+				{/* Scroll to Bottom Button */}
+				{showScrollButton && (
+					<button
+						onClick={scrollToBottom}
+						className="fixed bottom-24 right-4 p-2 rounded-full bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white shadow-lg hover:from-[#8A3251] hover:to-[#616C08] transition-all z-50"
+						title="Scroll to bottom"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-5 w-5"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+						>
+							<path
+								fillRule="evenodd"
+								d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+								clipRule="evenodd"
+							/>
+						</svg>
+					</button>
+				)}
 			</div>
 
 			{/* Program Selection */}
