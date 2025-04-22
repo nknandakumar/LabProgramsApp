@@ -27,7 +27,7 @@ const Home = () => {
 
 			<div className="text-center mt-10 h-[100vh] overflow-hidden">
 				{/* Hero Section with Gradient Background */}
-				<div className="h-[75vh] md:h-[100vh] flex flex-col justify-start items-center p-5 md:p-20 bg-[url('/sm-HeroImg.avif')]  md:bg-[url('/HeroImg.avif')] rounded-2xl mx-3 md:mx-10 bg-cover">
+				<div className="h-[60vh] md:h-[100vh] flex flex-col justify-center md:justify-start items-center p-5 md:p-20 bg-[url('/sm-HeroImg.avif')]  md:bg-[url('/HeroImg.avif')] rounded-2xl mx-3 md:mx-10 bg-cover">
 					<h1 className="font-sans leading-[50px] md:leading-[120px] mt-10 md:mt-0 text-6xl sm:text-7xl md:text-9xl text-center font-bold text-white mb-8">
 						Lab Set Programs
 					</h1>
@@ -47,7 +47,7 @@ const Home = () => {
 				</div>
 
 				{/* Code Editor Preview Section */}
-				<div className="w-full max-w-4xl mx-auto -mt-[180px] sm:-mt-[100px] md:-mt-[280px] px-4">
+				<div className="w-full max-w-4xl mx-auto hidden md:block sm:-mt-[100px] md:-mt-[280px] px-4">
 					<img
 						src="/CodeImg.avif"
 						alt="Hero section Image"
@@ -56,7 +56,7 @@ const Home = () => {
 				</div>
 			</div>
 
-			<div className="text-center -mt-30 sm:mt-16 md:mt-20 overflow-hidden px-4 sm:px-6 md:px-8 mx-auto max-w-7xl">
+			<div className="text-center -mt-60 sm:mt-16 md:mt-20 overflow-hidden px-4 sm:px-6 md:px-8 mx-auto max-w-7xl">
 				{/** Features Section */}
 				<div className="mb-10 sm:mb-16">
 					<h2 className="font-sans font-[800] text-[36px] sm:text-[42px] md:text-[52px] leading-[42px] sm:leading-[50px] md:leading-[58px] bg-gradient-to-b text-transparent from-white to-neutral-500 bg-clip-text">
