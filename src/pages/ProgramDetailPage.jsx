@@ -27,6 +27,7 @@ const ProgramDetailPage = () => {
 	const [isChatOpen, setIsChatOpen] = useState(false);
 	const [programForChat, setProgramForChat] = useState(null);
 	const [showNameModal, setShowNameModal] = useState(false);
+	const [isOutputLoading, setIsOutputLoading] = useState(false);
 
 	const cleanId = id ? id.replace(/\D/g, "") : "";
 	const program = getProgram(subject, Number(cleanId));
@@ -53,7 +54,15 @@ const ProgramDetailPage = () => {
 				// Ensure Python code has proper indentation
 				const formattedCode = program.code
 					.split("\n")
-					.map((line) => line.replace(/\t/g, "    ")) // Replace tabs with 4 spaces
+					.map((line) => {
+						// Replace tabs with 4 spaces
+						let spaces = 0;
+						while (line.startsWith("\t")) {
+							line = line.substring(1);
+							spaces += 4;
+						}
+						return " ".repeat(spaces) + line;
+					})
 					.join("\n");
 				setEditedCode({
 					html: formattedCode,
@@ -146,7 +155,7 @@ const ProgramDetailPage = () => {
 			return (
 				<div className="overflow-auto">
 					<pre className="line-numbers language-python text-xs sm:text-sm">
-						<code className="language-python whitespace-pre">
+						<code className="language-python whitespace-pre-wrap">
 							{codeContent}
 						</code>
 					</pre>
@@ -187,7 +196,7 @@ const ProgramDetailPage = () => {
 			case "code":
 				return (
 					<div className="w-full bg-[#0C0C0C] p-2 sm:p-4 overflow-x-auto relative">
-						<div className="flex justify-between items-center ">
+						<div className="flex justify-between items-center">
 							{!isPythonProgram && (
 								<div className="flex justify-between items-center mb-4">
 									<div className="flex space-x-2">
@@ -320,11 +329,30 @@ const ProgramDetailPage = () => {
 				if (isPythonProgram && program?.output) {
 					return (
 						<div className="w-full h-full bg-[#0C0C0C] p-4 flex justify-center items-center">
-							<img
-								src={program.output}
-								alt="Program Output"
-								className="max-w-full max-h-[calc(100vh-300px)] object-contain"
-							/>
+							{isOutputLoading ? (
+								<div aria-label="Loading..." role="status" className="flex items-center space-x-2">
+								<svg className="h-20 w-20 animate-spin stroke-gray-500" viewBox="0 0 256 256">
+									<line x1="128" y1="32" x2="128" y2="64" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+									<line x1="195.9" y1="60.1" x2="173.3" y2="82.7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+									<line x1="224" y1="128" x2="192" y2="128" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+									<line x1="195.9" y1="195.9" x2="173.3" y2="173.3" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+									<line x1="128" y1="224" x2="128" y2="192" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+									<line x1="60.1" y1="195.9" x2="82.7" y2="173.3" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+									<line x1="32" y1="128" x2="64" y2="128" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+									<line x1="60.1" y1="60.1" x2="82.7" y2="82.7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+								</svg>
+							
+							</div>
+							) : (
+								<img
+									src={program.output}
+									alt="Program Output"
+									className="max-w-full max-h-[calc(100vh-300px)] object-contain"
+									onLoadStart={() => setIsOutputLoading(true)}
+									onLoad={() => setIsOutputLoading(false)}
+									onError={() => setIsOutputLoading(false)}
+								/>
+							)}
 						</div>
 					);
 				}

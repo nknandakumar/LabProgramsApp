@@ -917,6 +917,7 @@ else:
 num = int(input("Enter a number: "))
 for i in range(1, 11):
     print(num, 'x', i, '=', num*i)`,
+	output:'https://ik.imagekit.io/6b0su29zd/PythonOutputs/4.png'
 	},
 	{
 		id: "5",

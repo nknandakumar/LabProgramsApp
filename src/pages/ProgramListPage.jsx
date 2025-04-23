@@ -15,7 +15,7 @@ const ProgramListPage = () => {
 	const subjectDescription =
 		subject === "cma"
 			? "HTML, CSS, and JavaScript examples with interactive demos"
-			: "Python programming examples from basic to advanced concepts";
+			: "Python programms with output";
 
 	return (
 		<div className="px-4 sm:px-8 md:px-16 lg:px-[112px] min-h-screen flex flex-col gap-4 sm:gap-6 md:gap-10 items-start justify-start py-4 sm:py-6 md:py-8">
