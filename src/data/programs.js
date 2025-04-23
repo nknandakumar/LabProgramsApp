@@ -433,7 +433,85 @@ const cmaPrograms = [
 		external_js: "",
 	},
 	{
-		id: "11",
+		id:11,
+		program_name:"Create Style sheet to set formatting for text tags and embed that style sheet on web pages created for your site.",
+		focused_on: ["CSS Styling", "Text Formatting", "Embedding Stylesheets", "HTML Elements"],
+		code:`
+<html lang="en">
+<head>
+    <title>Your Website Title</title>
+    <style>
+        /* General reset for elements */
+        body, h1, h2, h3, p, ul, ol, li, a {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Body styling */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #000;
+            margin: 20px;
+        }
+
+        /* Heading styles */
+        h1 {
+            font-size: 2.5rem;
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #009933;
+            margin-bottom: 15px;
+        }
+        h3 {
+            font-size: 1.8rem;
+            color: #cc0066;
+            margin-bottom: 15px;
+        }
+
+        /* Paragraph styles */
+        p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        /* List styles */
+        ul, ol {
+            margin-bottom: 10px;
+            color: blue;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        /* Important text styling */
+        .important-text {
+            font-weight: bold;
+            color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to My Website</h1>
+    <h2>This is heading tag h2</h2>
+    <h3>This is heading tag h3</h3>
+    <p>This is a paragraph of text.</p>
+    <ul>
+        <li>List item 1</li>
+        <li>List item 2</li>
+    </ul>
+    <p class="important-text">This text is important.</p>
+</body>
+</html>
+		`
+	},
+	{
+		id: "12",
 		program_name:
 			"Design a timetable and display it in tabular format using html",
 		focused_on: ["HTML Tables", "Table Styling", "Timetable Layout"],
@@ -532,7 +610,7 @@ const cmaPrograms = [
 		external_js: "",
 	},
 	{
-		id: "12",
+		id: "13",
 		program_name:
 			"Design signup form to validate username,password,and phone numbers etc. using Java script",
 		focused_on: ["HTML Forms", "JavaScript Validation", "Form Styling"],
@@ -608,7 +686,7 @@ const cmaPrograms = [
 		external_js: "",
 	},
 	{
-		id: "13",
+		id: "14",
 		program_name:
 			"Write a JavaScript to design a simple calculator to perform the following operations: sum, product, difference and quotient",
 		focused_on: [
@@ -695,7 +773,7 @@ const cmaPrograms = [
 		external_js: "",
 	},
 	{
-		id: "14",
+		id: "15",
 		program_name: `7. Develop and demonstrate a HTMLS file that includes JavaScript script that uses functions for the following problems: a. Parameter: A string b. Output: The position in the string of the left-most vowel c. Parameter: A number d. Output: The number with its digits in the reverse order`,
 		focused_on: ["JavaScript Functions", "String Manipulation", "Number Reversal"],
 		code: `
@@ -732,8 +810,8 @@ const cmaPrograms = [
 		`
 	},
 	{
-		id: "15",
-		program_name: `Select a country :<select id="countries"onchange=getCapitalO>`,
+		id: "16",
+		program_name: `Write an HTML page that contains a selection box with a list of 5 countries. When the user selects a country, its capital should be printed next in the list. Add CSS to customize the properties of the font of the capital (color, bold and font size).`,
 		focused_on: ["JavaScript Functions", "Dropdown Lists", "Event Handling"],
 		code: `<!DOCTYPE html>
   <html>
