@@ -433,10 +433,16 @@ const cmaPrograms = [
 		external_js: "",
 	},
 	{
-		id:11,
-		program_name:"Create Style sheet to set formatting for text tags and embed that style sheet on web pages created for your site.",
-		focused_on: ["CSS Styling", "Text Formatting", "Embedding Stylesheets", "HTML Elements"],
-		code:`
+		id: 11,
+		program_name:
+			"Create Style sheet to set formatting for text tags and embed that style sheet on web pages created for your site.",
+		focused_on: [
+			"CSS Styling",
+			"Text Formatting",
+			"Embedding Stylesheets",
+			"HTML Elements",
+		],
+		code: `
 <html lang="en">
 <head>
     <title>Your Website Title</title>
@@ -508,7 +514,7 @@ const cmaPrograms = [
     <p class="important-text">This text is important.</p>
 </body>
 </html>
-		`
+		`,
 	},
 	{
 		id: "12",
@@ -775,7 +781,11 @@ const cmaPrograms = [
 	{
 		id: "15",
 		program_name: `7. Develop and demonstrate a HTMLS file that includes JavaScript script that uses functions for the following problems: a. Parameter: A string b. Output: The position in the string of the left-most vowel c. Parameter: A number d. Output: The number with its digits in the reverse order`,
-		focused_on: ["JavaScript Functions", "String Manipulation", "Number Reversal"],
+		focused_on: [
+			"JavaScript Functions",
+			"String Manipulation",
+			"Number Reversal",
+		],
 		code: `
 <html >
 <body>
@@ -807,7 +817,7 @@ const cmaPrograms = [
 </script>
 </body>
 </html>
-		`
+		`,
 	},
 	{
 		id: "16",
@@ -842,7 +852,380 @@ const cmaPrograms = [
 	},
 ];
 
-export const pythonPrograms = [];
+//export const pythonPrograms = [];
+
+const pythonPrograms = [
+	{
+		id: "1",
+		program_name: "Check if a number belongs to the fibonacci Sequenced",
+		code: `n = int(input("Enter the number: "))
+c = 0
+a = 1
+b = 1
+
+if n == 0 or n == 1:
+    print("Yes, it belongs to Fibonacci sequence")
+else:
+    while c < n:
+        c = a + b
+        a = b
+        b = c
+        if c == n:
+            print("Yes, it belongs to Fibonacci sequence")
+            break
+    else:
+        print("No, it does not belong to Fibonacci sequence")`,
+		output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/1.png'
+	},
+	{
+		id: "2",
+		program_name: "Solve Quadratic Equation",
+		code: `import math
+a = float(input("Enter coefficient a: "))
+b = float(input("Enter coefficient b: "))
+c = float(input("Enter coefficient c: "))
+discriminant = b**2 - 4*a*c
+if discriminant >= 0:
+    root1 = (-b + math.sqrt(discriminant)) / (2*a)
+    root2 = (-b - math.sqrt(discriminant)) / (2*a)
+    print("Roots are:", root1, root2)
+else:
+    print("No real roots")`,
+	output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/2.png'
+	},
+
+	{
+		id: "3",
+		program_name: "Find the Sum of n natural numbers",
+		code: `
+num = int(input("Enter a Number: "))
+if num < 0:
+    num = int(input("Enter a positive integer: "))
+else:
+    sum = 0
+    while(num > 0):
+        sum += num
+        num -= 1
+    print("The sum of first n natural numbers is", sum)`,
+	output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/3.png'
+	},
+
+	{
+		id: "4",
+		program_name: "Display multiplication table",
+		code: `
+num = int(input("Enter a number: "))
+for i in range(1, 11):
+    print(num, 'x', i, '=', num*i)`,
+	},
+	{
+		id: "5",
+		program_name: "check if a given number is a prime Number Por not",
+		code: `
+num = int(input("Enter a number: "))
+if num > 1:
+    for i in range(2, num):
+        if (num % i) == 0:
+            print(num, "is not a prime number")
+            break
+    else:
+        print(num, "is a prime number")
+else:
+    print(num, "is not a prime number")`,
+	output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/5.png'
+	},
+	{
+		id: "6",
+		program_name: "Implement a sequential search ",
+		code: `
+# Function to search for an element in the list
+def search(lst, n, k):
+    for i in range(n):
+        if lst[i] == k:
+            return i
+    return -1
+
+# Initialize the list
+list = []
+
+# Input the number of elements
+n = int(input("Enter the number of elements: "))
+for i in range(0,n):
+    ele = int(input(f"Enter element {i + 1}: "))
+    list.append(ele)
+
+# Input the element to search for
+k = int(input("Enter the number to search: "))
+
+# Perform the search
+result = search(list, n, k)
+if result == -1:
+    print("Element not found")
+else:
+    print("Element found at index:", result)
+		`,
+		output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/6.png'
+	},
+	{
+		id: "7",
+		program_name: "Explore String Function",
+		code: `
+string = 'DVS College of Arts and Science!'
+
+print('\nString Upper')
+print(string.upper())
+
+print('\nString Lower')
+print(string.lower())
+
+print('\nString Title Case')
+print(string.title())
+
+print('\nString Swap Case')
+print(string.swapcase())
+
+print('\nString Capitalized')
+print(string.capitalize())
+
+print('\nOriginal String')
+print(string)
+		`,
+		output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/7.png'
+	},
+	{
+		id: "8",
+		program_name: "Read and Write into a File",
+		code:`
+f = open("demoFile.txt", "a")
+f.write("Python is a High Level Language \nYes, it is a high-level Language.\n")
+f.close()  # Close the file after writing
+
+f = open("demoFile.txt", "r")
+print(f.read())
+f.close()
+		`,
+		output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/8.png'
+	},
+	{
+		id: "9",
+		program_name: "Create a calculator program",
+		code: `
+# Define mathematical operations
+def add(num1, num2):
+    return num1 + num2
+
+def subtract(num1, num2):
+    return num1 - num2
+
+def multiply(num1, num2):
+    return num1 * num2
+
+def divide(num1, num2):
+    return num1 / num2
+
+
+# Select operation
+print("Select operation:")
+print("1. Add")
+print("2. Subtract")
+print("3. Multiply")
+print("4. Divide")
+
+# Get user input
+select = int(input("Select operation from 1, 2, 3, 4: "))
+number1 = int(input("Enter the first number: "))
+number2 = int(input("Enter the second number: "))
+
+# Perform the selected operation
+if select == 1:
+    print(number1, "+", number2, "=", add(number1, number2))
+elif select == 2:
+    print(number1, "-", number2, "=", subtract(number1, number2))
+elif select == 3:
+    print(number1, "*", number2, "=", multiply(number1, number2))
+elif select == 4:
+    print(number1, "/", number2, "=", divide(number1, number2))
+else:
+    print("Invalid input")
+		`,
+		output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/pb1.png'
+	},
+	{
+		id: "10",
+		program_name: "Implement Selection Sort",
+		code: `
+def selection_sort(array):
+    # Traverse through all array elements
+    for i in range(len(array)):
+        # Find the minimum element in the remaining unsorted array
+        smallest = i
+        for j in range(i + 1, len(array)):
+            if array[j] < array[smallest]:
+                smallest = j
+
+        # Swap the found minimum element with the first element
+        array[i], array[smallest] = array[smallest], array[i]
+
+# Input the list of numbers
+array = input("Enter the list of numbers separated by spaces: ").split()
+array = [int(x) for x in array]
+
+# Perform selection sort
+selection_sort(array)
+
+# Print the sorted array
+print("List after sorting is:", array)		
+		`,
+		output:'https://ik.imagekit.io/6b0su29zd/PythonOutputs/pb2.png'
+	},
+	{
+		id: "11",
+		program_name: " Demonstrate exception handling",
+		code: `
+try:
+    num1 = int(input("Enter a number: "))
+    num2 = int(input("Enter another number: "))
+    result = num1 / num2
+    print("The result is:", result)
+except ValueError:
+    print("Invalid input. Please enter a valid number.")
+except ZeroDivisionError:
+    print("Error: A number cannot be divided by zero.")
+		`,
+		output:'https://ik.imagekit.io/6b0su29zd/PythonOutputs/pb3.png'
+	},
+	{
+		id: "12",
+		program_name: "Demonstrate use of Dictonaries",
+		code: `
+# Define the student dictionary
+Student = {'name': 'John Wick', 'age': 20, 'dept': 'CS', 'gpa': 3.5}
+
+# Print details
+print('Name:', Student['name'])
+print('Age:', Student['age'])
+print('Department:', Student['dept'])
+print('GPA:', Student['gpa'])
+
+# Update the student dictionary
+Student['age'] = 21
+Student['gpa'] = 3.8
+Student['year'] = 3
+del Student['dept']  # Delete the 'dept' key from the dictionary
+
+# Print updated dictionary using a loop
+for key, value in Student.items():
+    print(key + ':', value)
+print(Student)
+	`,
+	output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/pb4.png'
+	},
+	{
+		id: "13",
+		program_name: "Demonstrate use of Tuples",
+		code: `
+# Define the tuple
+my_tuple = ("apple", "banana", "cherry")
+print(my_tuple[0]) 
+print(my_tuple[2]) # Print the first element of the tuple
+
+# Iterate through the tuple
+for fruit in my_tuple:
+    print(fruit)
+
+# Print the length of the tuple
+print(len(my_tuple))
+
+# Define another tuple
+other_tuple = ("orange", "grapes")
+
+# Concatenate the tuples
+concatenated_tuple = my_tuple + other_tuple
+print(concatenated_tuple)
+
+# Unpack the original tuple into variables
+a, b, c = my_tuple
+print(a)
+print(b)
+print(c)
+
+# Check if "banana" is in the tuple
+print("banana" in my_tuple)
+
+# Count occurrences of "apple" in the tuple
+count = my_tuple.count("apple")
+print(count)
+
+# Find the index of "banana" in the tuple
+index = my_tuple.index("banana")
+print(index)
+		`,
+		output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/pb5.png'
+	},
+	{
+		id: "14",
+		program_name: "Drawing line and bar chart using matplatib",
+		code: `
+import numpy as np
+from pandas import *
+import matplotlib.pyplot as plt
+
+# Define data for the first plot
+x = np.array([1, 2, 3, 4, 5])
+y = np.array([23, 45, 56, 78, 213])
+
+# Plot a line graph
+plt.plot(x, y)
+plt.show()
+
+# Define data for the bar graph
+data = [23, 45, 56, 78, 213]
+plt.bar(x, data)
+plt.show()
+		`,
+		output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/pb6.png'
+	},
+	{
+		id: "15",
+		program_name: "Create array using Numpy and Perform array operation",
+		code: `
+import numpy as np
+
+# Print sample lists
+print([[1, 2, 3], [4, 5, 6]])
+print([[7, 8, 9], [10, 11, 12]])
+
+# Define numpy arrays
+a = np.array([[1, 2, 3], [4, 5, 6]])
+b = np.array([[7, 8, 9], [10, 11, 12]])
+
+# Perform operations
+addition = np.add(a, b)
+print('addition:', addition)
+
+subtraction = np.subtract(a, b)
+print('subtraction:', subtraction)
+
+multiplication = np.multiply(a, b)
+print('multiplication:', multiplication)
+
+division = np.divide(a, b)
+print('division:', division)
+
+# Find sum of array elements
+sum_array = np.sum(a)
+print('sum of the array element:', sum_array)
+
+# Find maximum and minimum elements
+max_element = np.max(a)
+print('maximum element:', max_element)
+
+min_element = np.min(a)
+print('minimum element:', min_element)
+`,
+		output: 'https://ik.imagekit.io/6b0su29zd/PythonOutputs/pb7.png'
+	},
+];
 
 export const getAllPrograms = (subject) => {
 	if (subject === "cma") {

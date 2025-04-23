@@ -30,6 +30,7 @@ const ProgramDetailPage = () => {
 
 	const cleanId = id ? id.replace(/\D/g, "") : "";
 	const program = getProgram(subject, Number(cleanId));
+	const isPythonProgram = subject.toLowerCase() === "python";
 
 	useEffect(() => {
 		if (!getUserName()) {
@@ -44,23 +45,30 @@ const ProgramDetailPage = () => {
 				window.Prism.highlightAll();
 			}, 100);
 		}
-	}, [activeTab, activeCodeTab, editedCode]);
+	}, [activeTab, activeCodeTab, editedCode, isPythonProgram]);
 
 	useEffect(() => {
 		if (program) {
-			// Extract HTML, CSS, and JS from the program code
-			const htmlContent = program.code || "";
-			const cssContent = program.external_css || "";
-			const jsContent = program.external_js || "";
-
-			// Set the edited code state
-			setEditedCode({
-				html: htmlContent,
-				css: cssContent,
-				js: jsContent,
-			});
+			if (isPythonProgram) {
+				// Ensure Python code has proper indentation
+				const formattedCode = program.code
+					.split("\n")
+					.map((line) => line.replace(/\t/g, "    ")) // Replace tabs with 4 spaces
+					.join("\n");
+				setEditedCode({
+					html: formattedCode,
+					css: "",
+					js: "",
+				});
+			} else {
+				setEditedCode({
+					html: program.code || "",
+					css: program.external_css || "",
+					js: program.external_js || "",
+				});
+			}
 		}
-	}, [program]);
+	}, [program, isPythonProgram]);
 
 	const handleNameSubmit = (name) => {
 		setUserName(name);
@@ -116,7 +124,7 @@ const ProgramDetailPage = () => {
 		);
 	}
 
-	const { program_name, focused_on } = program;
+	const { program_name } = program;
 
 	// Create a combined HTML document with CSS and JS for preview
 	const combinedHtml = `
@@ -133,31 +141,44 @@ const ProgramDetailPage = () => {
 	`;
 
 	const renderCodeTabContent = () => {
-		const codeContent = editedCode[activeCodeTab];
-		const language =
-			activeCodeTab === "html"
-				? "html"
-				: activeCodeTab === "css"
-					? "css"
-					: "javascript";
-
-		if (isEditing) {
-			return (
-				<textarea
-					value={codeContent}
-					onChange={handleCodeChange}
-					className="w-full h-[calc(100vh-400px)] bg-[#1C1C1C] text-white p-4 font-mono text-sm resize-none focus:outline-none"
-					spellCheck="false"
-				/>
-			);
-		} else {
+		if (isPythonProgram) {
+			const codeContent = editedCode.html;
 			return (
 				<div className="overflow-auto">
-					<pre className="line-numbers language-html text-xs sm:text-sm">
-						<code className={`language-${language}`}>{codeContent}</code>
+					<pre className="line-numbers language-python text-xs sm:text-sm">
+						<code className="language-python whitespace-pre">
+							{codeContent}
+						</code>
 					</pre>
 				</div>
 			);
+		} else {
+			const codeContent = editedCode[activeCodeTab];
+			const language =
+				activeCodeTab === "html"
+					? "html"
+					: activeCodeTab === "css"
+						? "css"
+						: "javascript";
+
+			if (isEditing) {
+				return (
+					<textarea
+						value={codeContent}
+						onChange={handleCodeChange}
+						className="w-full h-[calc(100vh-400px)] bg-[#1C1C1C] text-white p-4 font-mono text-sm resize-none focus:outline-none"
+						spellCheck="false"
+					/>
+				);
+			} else {
+				return (
+					<div className="overflow-auto">
+						<pre className="line-numbers language-html text-xs sm:text-sm">
+							<code className={`language-${language}`}>{codeContent}</code>
+						</pre>
+					</div>
+				);
+			}
 		}
 	};
 
@@ -166,74 +187,82 @@ const ProgramDetailPage = () => {
 			case "code":
 				return (
 					<div className="w-full bg-[#0C0C0C] p-2 sm:p-4 overflow-x-auto relative">
-						<div className="flex justify-between items-center mb-4">
-							<div className="flex space-x-2">
-								<button
-									onClick={() => handleCodeTabChange("html")}
-									className={`px-3 py-1.5 rounded text-sm ${
-										activeCodeTab === "html"
-											? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white"
-											: "bg-[#1C1C1C] text-gray-300 hover:text-white"
-									}`}
-								>
-									HTML
-								</button>
-								<button
-									onClick={() => handleCodeTabChange("css")}
-									className={`px-3 py-1.5 rounded text-sm ${
-										activeCodeTab === "css"
-											? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white"
-											: "bg-[#1C1C1C] text-gray-300 hover:text-white"
-									}`}
-								>
-									CSS
-								</button>
-								<button
-									onClick={() => handleCodeTabChange("js")}
-									className={`px-3 py-1.5 rounded text-sm ${
-										activeCodeTab === "js"
-											? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white"
-											: "bg-[#1C1C1C] text-gray-300 hover:text-white"
-									}`}
-								>
-									JS
-								</button>
-							</div>
-							<div className="flex items-center gap-2">
-								{isEditing ? (
-									<button
-										onClick={toggleEditMode}
-										className="p-1.5 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
-										title="Cancel editing"
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											className="h-4 w-4"
-											viewBox="0 0 20 20"
-											fill="currentColor"
+						<div className="flex justify-between items-center ">
+							{!isPythonProgram && (
+								<div className="flex justify-between items-center mb-4">
+									<div className="flex space-x-2">
+										<button
+											onClick={() => handleCodeTabChange("html")}
+											className={`px-3 py-1.5 rounded text-sm ${
+												activeCodeTab === "html"
+													? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white"
+													: "bg-[#1C1C1C] text-gray-300 hover:text-white"
+											}`}
 										>
-											<path
-												fillRule="evenodd"
-												d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-												clipRule="evenodd"
-											/>
-										</svg>
-									</button>
-								) : (
-									<button
-										onClick={toggleEditMode}
-										className="p-1.5 bg-[#1C1C1C] text-gray-300 hover:text-white rounded-full hover:bg-[#2A2A2A] transition-colors"
-										title="Edit code"
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											className="h-4 w-4"
-											viewBox="0 0 20 20"
-											fill="currentColor"
+											HTML
+										</button>
+										<button
+											onClick={() => handleCodeTabChange("css")}
+											className={`px-3 py-1.5 rounded text-sm ${
+												activeCodeTab === "css"
+													? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white"
+													: "bg-[#1C1C1C] text-gray-300 hover:text-white"
+											}`}
 										>
-											<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-										</svg>
-									</button>
+											CSS
+										</button>
+										<button
+											onClick={() => handleCodeTabChange("js")}
+											className={`px-3 py-1.5 rounded text-sm ${
+												activeCodeTab === "js"
+													? "bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white"
+													: "bg-[#1C1C1C] text-gray-300 hover:text-white"
+											}`}
+										>
+											JS
+										</button>
+									</div>
+								</div>
+							)}
+							<div className="flex justify-end items-center gap-2 mb-4">
+								{!isPythonProgram && (
+									<>
+										{isEditing ? (
+											<button
+												onClick={toggleEditMode}
+												className="p-1.5 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+												title="Cancel editing"
+											>
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													className="h-4 w-4"
+													viewBox="0 0 20 20"
+													fill="currentColor"
+												>
+													<path
+														fillRule="evenodd"
+														d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+														clipRule="evenodd"
+													/>
+												</svg>
+											</button>
+										) : (
+											<button
+												onClick={toggleEditMode}
+												className="p-1.5 bg-[#1C1C1C] text-gray-300 hover:text-white rounded-full hover:bg-[#2A2A2A] transition-colors"
+												title="Edit code"
+											>
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													className="h-4 w-4"
+													viewBox="0 0 20 20"
+													fill="currentColor"
+												>
+													<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+												</svg>
+											</button>
+										)}
+									</>
 								)}
 								<button
 									onClick={handleCopyCode}
@@ -287,6 +316,23 @@ const ProgramDetailPage = () => {
 						/>
 					</div>
 				);
+			case "output":
+				if (isPythonProgram && program?.output) {
+					return (
+						<div className="w-full h-full bg-[#0C0C0C] p-4 flex justify-center items-center">
+							<img
+								src={program.output}
+								alt="Program Output"
+								className="max-w-full max-h-[calc(100vh-300px)] object-contain"
+							/>
+						</div>
+					);
+				}
+				return (
+					<div className="w-full h-full bg-[#0C0C0C] p-4 flex justify-center items-center text-gray-400">
+						No output available
+					</div>
+				);
 			default:
 				return null;
 		}
@@ -307,15 +353,17 @@ const ProgramDetailPage = () => {
 					<h4 className="text-sm  font-sans sm:text-xl md:text-3xl font-bold">
 						{program_name}
 					</h4>
-					
-	               <div className="flex md:my-6 gap-2 flex-wrap">
-				   {focused_on.map((name,index)=>(
-							<span key={index} className="text-black bg-gray-300 block px-2 py-1 rounded-md font-mono text-[10px] sm:text-base">
+
+					<div className="flex md:my-6 gap-2 flex-wrap">
+						{program?.focused_on?.map((name, index) => (
+							<span
+								key={index}
+								className="text-black bg-gray-300 block px-2 py-1 rounded-md font-mono text-[10px] sm:text-base"
+							>
 								{name}
 							</span>
-						)) }
-				   </div>
-				
+						))}
+					</div>
 				</div>
 
 				<div className="w-full border border-gray-800 rounded-lg overflow-hidden">
@@ -327,12 +375,22 @@ const ProgramDetailPage = () => {
 								activeTab={activeTab}
 								setActiveTab={handleTabChange}
 							/>
-							<TabButton
-								name="Live preview"
-								conditionValue="preview"
-								activeTab={activeTab}
-								setActiveTab={handleTabChange}
-							/>
+							{!isPythonProgram && (
+								<TabButton
+									name="Live preview"
+									conditionValue="preview"
+									activeTab={activeTab}
+									setActiveTab={handleTabChange}
+								/>
+							)}
+							{isPythonProgram && (
+								<TabButton
+									name="Output"
+									conditionValue="output"
+									activeTab={activeTab}
+									setActiveTab={handleTabChange}
+								/>
+							)}
 							<TabButton
 								name="Explain Me"
 								conditionValue="explain"
