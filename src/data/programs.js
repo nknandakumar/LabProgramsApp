@@ -1,4 +1,3 @@
-
 const cmaPrograms = [
 	{
 		id: "1",
@@ -20,12 +19,11 @@ const cmaPrograms = [
 	<body background="4.jpg">
 	<h1><font color="yellow">b.Hyperlink using an image</font></h1>
 	<a href="http://www.google.com"><font color="white" size="5">click on the image</font><br>
-	<img src="5.jpg"></a>
+	<img src="https://images.pexels.com/photos/6985003/pexels-photo-6985003.jpeg?cs=srgb&dl=pexels-codioful-6985003.jpg&fm=jpg" width="100" height="100"></a>
 	<h1><font color="yellow">c.Hyperlink with another webpage</font></h1>
 	<a href="first.html"><font color="white" size="5">click here</font></a>
 	<h1><font color="yellow">d.Link to e-mail address</font></h1>
 	<a href="http://mail.google.com"><font color="white" size="5">link to send mail</font></a>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
   </body>
   </html>`,
 		external_css: "",
@@ -42,12 +40,15 @@ const cmaPrograms = [
 	<title>Audio and Video</title>
   </head>
   <body>
+
 	<audio controls autoplay loop>
-	  <source src="music.mp3">
-	</audio>
+  <source src="http://commondatastorage.googleapis.com/codeskulptor-assets/Evillaugh.ogg" type="audio/mp3">
+</audio>
 	<br><br><br><br>
-	<embed src="play.avi" type="video/avi" width="600" height="600">
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+	
+<video autoplay  controls width="600" height="600">
+  <source src="https://www.shutterstock.com/shutterstock/videos/1062226075/preview/stock-footage-dynamic-front-view-shot-of-a-formula-one-race-car-driving-around-a-curve-with-grandstands-in.webm" type="video/webm">
+</video>
   </body>
   </html>`,
 		external_css: "",
@@ -81,7 +82,7 @@ const cmaPrograms = [
 		}
 	  }
 	</script>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+	
   </body>
   </html>`,
 		external_css: "",
@@ -121,7 +122,7 @@ const cmaPrograms = [
 	<p><label>Celsius</label>
 	<input type="text" id="celsius" oninput="temperatureConverter1(this.value)" onchange="temperatureConverter1(this.value)"></p>
 	<p>Fahrenheit: <span id="outputFahrenheit"></span></p>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+
   </body>
   </html>`,
 		external_css: "",
@@ -156,8 +157,7 @@ const cmaPrograms = [
   <body>
 	<h1>Animation</h1>
 	<div></div>
-	<p><b>note:</b> When an animation is finished, it goes back to its original style:</p>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+	<p><b>note:</b> When an animation is finished, it goes back to its original style:</p>	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
   </body>
   </html>`,
 		external_css: "",
@@ -242,8 +242,7 @@ const cmaPrograms = [
 	
 	<footer>
 	  <p>Footer</p>
-	</footer>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+	</footer><footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
   </body>
   </html>`,
 		external_css: "",
@@ -275,7 +274,7 @@ const cmaPrograms = [
 		</script>
 	  </table>
 	</center>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+
   </body>
   </html>`,
 		external_css: "",
@@ -306,7 +305,7 @@ const cmaPrograms = [
 	  c.fillText(text, x, y);
 	  c.strokeText(text, x, y);
 	</script>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+
   </body>
   </html>`,
 		external_css: "",
@@ -355,7 +354,7 @@ const cmaPrograms = [
 	<b>Font example for bold</b><br>
 	<i>Font example for italic</i><br>
 	<u>Font example for underline</u><br>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+
   </body>
   </html>`,
 		external_css: "",
@@ -427,7 +426,7 @@ const cmaPrograms = [
 		<td>$5500</td>
 	  </tr>
 	</table>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+
   </body>
   </html>`,
 		external_css: "",
@@ -526,7 +525,7 @@ const cmaPrograms = [
 		<td>Geography</td>
 	  </tr>
 	</table>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+	
   </body>
   </html>`,
 		external_css: "",
@@ -602,7 +601,7 @@ const cmaPrograms = [
 		return isValid;
 	  }
 	</script>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+
   </body>
   </html>`,
 		external_css: "",
@@ -674,7 +673,7 @@ const cmaPrograms = [
 		<br>
 	  </form>
 	</div>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+
   </body>
   </html>`,
 		external_css: "",
@@ -717,7 +716,7 @@ const cmaPrograms = [
 		}
 	  }
 	</script>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+
   </body>
   </html>
   `,
@@ -749,7 +748,7 @@ const cmaPrograms = [
 		document.getElementById("txtbox").value = capitals[i];
 	  }
 	</script>
-	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+
   </body>
   </html>`,
 		external_css: "",
@@ -770,5 +769,5 @@ export const getAllPrograms = (subject) => {
 
 export const getProgram = (subject, id) => {
 	const programs = getAllPrograms(subject);
-	return programs.find((program) => program.id == id);  // Using loose equality
-  };
+	return programs.find((program) => program.id == id); // Using loose equality
+};

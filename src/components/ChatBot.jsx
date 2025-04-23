@@ -216,30 +216,19 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 					}
 				);
 
-				console.log("Response status:", response.status);
-				console.log(
-					"Response headers:",
-					Object.fromEntries([...response.headers])
-				);
-
 				if (!response.ok) {
 					let errorMessage = "Failed to get response from server";
 					try {
 						const errorData = await response.json();
-						console.log("Error data:", errorData);
 						errorMessage = errorData.message || errorMessage;
 					} catch {
-						// If parsing JSON fails, try to get the text content
 						const textError = await response.text();
-						console.log("Error text:", textError);
 						errorMessage = textError || errorMessage;
 					}
 					throw new Error(errorMessage);
 				}
 
 				const data = await response.json();
-
-				// Ensure we're passing a string to typeMessage
 				let messageContent = "";
 				if (typeof data === "string") {
 					messageContent = data;
@@ -250,7 +239,6 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 				} else if (data.explanation) {
 					messageContent = data.explanation;
 				} else {
-					// If we can't find a string property, convert the object to a string
 					messageContent = JSON.stringify(data);
 				}
 
@@ -258,38 +246,39 @@ const ChatBot = ({ isOpen, onClose, initialProgram }) => {
 			} catch (fetchError) {
 				console.error("Error fetching from backend:", fetchError);
 
-				// If the fetch fails, try to use a fallback response
+				// Personalized error messages
+				let errorMessage = getPersonalizedMessage(
+					`I'm sorry [Name], but I'm having trouble connecting to the server right now. This could be due to network issues or the server being down. Here are some things you can try:\n\n1. Check your internet connection\n2. Refresh the page\n3. Try again in a few minutes\n\nIf the problem persists, please contact support.`,
+					`I'm sorry, but I'm having trouble connecting to the server right now. This could be due to network issues or the server being down. Here are some things you can try:\n\n1. Check your internet connection\n2. Refresh the page\n3. Try again in a few minutes\n\nIf the problem persists, please contact support.`
+				);
+
 				if (
 					fetchError.message.includes("Failed to fetch") ||
 					fetchError.message.includes("NetworkError")
 				) {
-					// Provide a fallback response when the backend is not accessible
-					const fallbackResponse =
-						"I'm sorry, but I'm having trouble connecting to the server right now. This could be due to network issues or the server being down. Please try again later or contact support if the problem persists.";
-					typeMessage(fallbackResponse);
-				} else {
-					throw fetchError; // Re-throw other errors
+					errorMessage = getPersonalizedMessage(
+						`Hi [Name], I notice you're having trouble connecting to the server. Let's try to fix this:\n\n1. First, check if your internet connection is working\n2. If it is, try refreshing the page\n3. If that doesn't work, wait a few minutes and try again\n\nI'll be here when you're ready to continue!`,
+						`I notice you're having trouble connecting to the server. Let's try to fix this:\n\n1. First, check if your internet connection is working\n2. If it is, try refreshing the page\n3. If that doesn't work, wait a few minutes and try again\n\nI'll be here when you're ready to continue!`
+					);
+				} else if (fetchError.message.includes("Backend URL is not defined")) {
+					errorMessage = getPersonalizedMessage(
+						`[Name], there seems to be a configuration issue with the server. This is something our team needs to fix. In the meantime, you can:\n\n1. Try refreshing the page\n2. Contact support with this error message\n3. Try again later\n\nWe apologize for the inconvenience!`,
+						`There seems to be a configuration issue with the server. This is something our team needs to fix. In the meantime, you can:\n\n1. Try refreshing the page\n2. Contact support with this error message\n3. Try again later\n\nWe apologize for the inconvenience!`
+					);
 				}
+
+				typeMessage(errorMessage);
 			}
 		} catch (error) {
 			console.error("Error in chat:", error);
 
-			// Provide more specific error messages based on the error type
-			let errorMessage =
-				"Sorry, I'm having trouble connecting to the server. Please try again later.";
+			// More detailed and personalized error messages
+			let errorMessage = getPersonalizedMessage(
+				`[Name], I'm having some technical difficulties right now. Here's what's happening:\n\n${error.message}\n\nWhat you can do:\n1. Try refreshing the page\n2. Check your internet connection\n3. If the problem continues, please contact support\n\nI'll be here when you're ready to continue!`,
+				`I'm having some technical difficulties right now. Here's what's happening:\n\n${error.message}\n\nWhat you can do:\n1. Try refreshing the page\n2. Check your internet connection\n3. If the problem continues, please contact support\n\nI'll be here when you're ready to continue!`
+			);
 
-			if (
-				error.message.includes("Failed to fetch") ||
-				error.message.includes("NetworkError")
-			) {
-				errorMessage =
-					"Unable to connect to the server. Please check your internet connection or try again later.";
-			} else if (error.message.includes("Backend URL is not defined")) {
-				errorMessage =
-					"Server configuration error. Please contact the administrator.";
-			}
-
-			typeMessage(getPersonalizedMessage(errorMessage, errorMessage));
+			typeMessage(errorMessage);
 		} finally {
 			setLoading(false);
 		}
