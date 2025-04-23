@@ -157,7 +157,7 @@ const cmaPrograms = [
   <body>
 	<h1>Animation</h1>
 	<div></div>
-	<p><b>note:</b> When an animation is finished, it goes back to its original style:</p>	<footer>Dept of Computer Science<br>DVS College of Arts and Science, Shimoga</footer>
+	<p><b>note:</b> When an animation is finished, it goes back to its original style:</p>
   </body>
   </html>`,
 		external_css: "",
@@ -616,112 +616,120 @@ const cmaPrograms = [
 			"Calculator Operations",
 			"Form Elements",
 		],
-		code: `<!DOCTYPE html>
-  <html>
-  <head>
-	<title>JavaScript Calculator</title>
-	<style>
-	  #cleart {
-		width: 270px;
-		border: 3px solid gray;
-		border-radius: 3px;
-		padding: 20px;
-		background-color: red;
-	  }
-	  
-	  .formstyle {
-		width: 300px;
-		height: 530px;
-		margin: auto;
-		border: 3px solid skyblue;
-		border-radius: 5px;
-		padding: 20px;
-	  }
-	  
-	  input {
-		width: 20px;
-		background-color: green;
-		color: white;
-		border: 3px solid gray;
-		border-radius: 5px;
-		padding: 26px;
-		margin: 5px;
-		font-size: 15px;
-	  }
-	  
-	  #calct {
-		width: 250px;
-		border: 5px solid black;
-		border-radius: 3px;
-		padding: 20px;
-		margin: auto;
-	  }
-	</style>
-  </head>
-  <body>
-	<div class="formstyle">
-	  <form name="form1">
-		<br><br>
-		<input type="button" value="9" onclick="form1.answer.value += '9'">
-		<input type="button" value="*" onclick="form1.answer.value += '*'">
-		<br><br>
-		<input type="button" value="/" onclick="form1.answer.value += '/'">
-		<input type="button" value="0" onclick="form1.answer.value += '0'">
-		<input type="button" value="=" onclick="form1.answer.value = eval(form1.answer.value)">
-		<br>
-		<input type="text" id="clear">
-		<br>
-	  </form>
-	</div>
+		code: `
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Calculator</title>
+    <style>
+        #clear {
+            width: 270px;
+            border: 3px solid gray;
+            border-radius: 3px;
+            background-color: red;
+        }
 
-  </body>
-  </html>`,
+        .formstyle {
+            width: 300px;
+            height: 530px;
+            margin: auto;
+            border: 3px solid skyblue;
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        input {
+            width: 60px;
+            background-color: green;
+            color: white;
+            border: 3px solid gray;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px;
+            font-size: 15px;
+        }
+
+        #calc {
+            width: 250px;
+            border: 5px solid black;
+            border-radius: 3px;
+            padding: 10px;
+            margin: auto;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <center><h1>Calculator Program in JavaScript</h1></center>
+    <div class="formstyle">
+        <form name="form1">
+            <input id="calc" type="text" name="answer" readonly><br><br>
+            <input type="button" value="1" onclick="form1.answer.value += '1'">
+            <input type="button" value="2" onclick="form1.answer.value += '2'">
+            <input type="button" value="3" onclick="form1.answer.value += '3'">
+            <input type="button" value="+" onclick="form1.answer.value += '+'">
+            <br><br>
+            <input type="button" value="4" onclick="form1.answer.value += '4'">
+            <input type="button" value="5" onclick="form1.answer.value += '5'">
+            <input type="button" value="6" onclick="form1.answer.value += '6'">
+            <input type="button" value="-" onclick="form1.answer.value += '-'">
+            <br><br>
+            <input type="button" value="7" onclick="form1.answer.value += '7'">
+            <input type="button" value="8" onclick="form1.answer.value += '8'">
+            <input type="button" value="9" onclick="form1.answer.value += '9'">
+            <input type="button" value="*" onclick="form1.answer.value += '*'">
+            <br><br>
+            <input type="button" value="/" onclick="form1.answer.value += '/'">
+            <input type="button" value="0" onclick="form1.answer.value += '0'">
+            <input type="button" value="." onclick="form1.answer.value += '.'">
+            <input type="button" value="=" onclick="form1.answer.value = eval(form1.answer.value)">
+            <input type="button" value="Clear All" onclick="form1.answer.value = ''" id="clear">
+            <br>
+        </form>
+    </div>
+</body>
+</html>
+  `,
 		external_css: "",
 		external_js: "",
 	},
 	{
 		id: "14",
-		program_name:
-			"Develop and demonstrate a HTMLS file that includes JavaScript script that uses functions for the following problems: a.Paramcter:A string b.Output:The position in the string of the let-most vowel c.Parameter:Anumber d.Output:The number with its digits in the reverse order",
-		focused_on: [
-			"JavaScript Functions",
-			"String Manipulation",
-			"Number Reversal",
-		],
-		code: `<!DOCTYPE html>
-  <html>
-  <body>
-	<script type="text/javascript">
-	  var str = prompt("Enter the Input", "");
-	  if (isNaN(str)) {
-		var num, rev = 0, remainder;
-		num = parseInt(str);
-		while (num != 0) {
-		  remainder = num % 10;
-		  num = parseInt(num / 10);
-		  rev = rev * 10 + remainder;
-		}
-		alert("Reverse of " + str + " is " + rev);
-	  } else {
-		str = str.toUpperCase();
-		for (var i = 0; i < str.length; i++) {
-		  var chr = str.charAt(i);
-		  if (chr == 'A' || chr == 'E' || chr == 'I' || chr == 'O' || chr == 'U') {
-			alert("The position of the left most vowel is " + (i + 1));
-			break;
-		  }
-		  if (i == str.length - 1) {
-			alert("No vowel found in the entered string");
-		  }
-		}
-	  }
-	</script>
+		program_name: `7. Develop and demonstrate a HTMLS file that includes JavaScript script that uses functions for the following problems: a. Parameter: A string b. Output: The position in the string of the left-most vowel c. Parameter: A number d. Output: The number with its digits in the reverse order`,
+		focused_on: ["JavaScript Functions", "String Manipulation", "Number Reversal"],
+		code: `
+<html >
+<body>
+<script type="text/javascript">
+    var str = prompt("Enter the Input", "");
 
-  </body>
-  </html>
-  `,
-		external_css: "",
-		external_js: "",
+    if (!isNaN(str)) {
+        var num, rev = 0, remainder;
+        num = parseInt(str);
+        while (num != 0) {
+            remainder = num % 10;
+            num = parseInt(num / 10);
+            rev = rev * 10 + remainder;
+        }
+        alert("Reverse of " + str + " is " + rev);
+    } else {
+        str = str.toUpperCase();
+        for (var i = 0; i < str.length; i++) {
+            var chr = str.charAt(i);
+            if(chr == 'A' || chr == 'E' || chr == 'I' || chr == 'O' || chr == 'U') break;
+        }
+
+        if (i < str.length) {
+            alert("The position of the left most vowel is " + (i + 1) );
+        }else {
+            alert("No vowel found in the entered string.");
+        }
+    }
+</script>
+</body>
+</html>
+		`
 	},
 	{
 		id: "15",
