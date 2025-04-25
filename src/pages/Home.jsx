@@ -4,8 +4,13 @@ import FeatureCard from "../components/FeatureCard";
 import AIFeatureCard from "../components/AIFeatureCard";
 import Footer from "../components/Footer";
 import Button from "../components/Button";
+import { trackEvent } from "../utils/analytics";
 
 const Home = () => {
+	const handleButtonClick = (buttonName) => {
+		trackEvent("Button Click", "Click", buttonName);
+	};
+
 	const features = [
 		{
 			name: "Ready-to-use Code Snippets",
@@ -40,6 +45,9 @@ const Home = () => {
 					<Link to={`/subjects`}>
 						<span className="flex justify-center">
 							<button
+								onClick={() =>
+									handleButtonClick("Hero Section - Lab Programs Button")
+								}
 								className="animate-border border cursor-pointer relative bg-gradient-to-r from-black via-gray-700 to-gray-900 text-white font-mono rounded-md transition-all duration-300  text-sm py-4 px-4 min-w-[140px]  sm:text-base sm:py-3 sm:px-5 sm:min-w-[160px] md:text-lg md:py-4 md:px-6 md:min-w-[180px] hover:shadow-lg hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white"
 							>
 								Click here for Lab Programs
@@ -103,7 +111,12 @@ const Home = () => {
 											</h3>
 										</div>
 										<Link to={subject.path} className="mt-4 sm:mt-6">
-											<button className="font-sans bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white uppercase px-4 sm:px-6 py-2 font-[600] tracking-wide text-[12px] sm:text-[14px] cursor-pointer rounded-lg hover:from-[#8A3251] hover:to-[#616C08] transition-all duration-300 w-fit">
+											<button
+												onClick={() =>
+													handleButtonClick(`View Programs - ${subject.name}`)
+												}
+												className="font-sans bg-gradient-to-r from-[#616C08] to-[#8A3251] text-white uppercase px-4 sm:px-6 py-2 font-[600] tracking-wide text-[12px] sm:text-[14px] cursor-pointer rounded-lg hover:from-[#8A3251] hover:to-[#616C08] transition-all duration-300 w-fit"
+											>
 												View Programs
 											</button>
 										</Link>
@@ -126,7 +139,12 @@ const Home = () => {
 					</p>
 					<Link to={`/subjects`}>
 						<span className="border border-gray-300 hover:border-white hover:border-2  py-4 px-0.5 rounded-md ">
-							<button className=" animate-border bg-gradient-to-r from-[#000]  via-[#36454F] to-[#0A0A0A] font-mono cursor-pointer text-white px-6 py-3  rounded-md">
+							<button
+								onClick={() =>
+									handleButtonClick("Bottom Section - Lab Programs Button")
+								}
+								className="animate-border bg-gradient-to-r from-[#000]  via-[#36454F] to-[#0A0A0A] font-mono cursor-pointer text-white px-6 py-3  rounded-md"
+							>
 								Click here for Lab Programs
 							</button>
 						</span>
